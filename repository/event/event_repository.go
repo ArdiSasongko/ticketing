@@ -1,6 +1,8 @@
 package repository
 
+import "github.com/ArdiSasongko/ticketing_app/model/domain"
+
 type EventRepository interface {
-	GetUser(Id int) (domain.User, error)
-	GetUsers() ([]domain.User, error)
+	GetEvent(Id int) (domain.Events, error)
+	GetEvents() ([]domain.Events, error)
 }

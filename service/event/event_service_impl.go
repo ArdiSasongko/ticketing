@@ -1,16 +1,21 @@
 package service
 
+import (
+	entity "github.com/ArdiSasongko/ticketing_app/model/entity/event"
+	repository "github.com/ArdiSasongko/ticketing_app/repository/event"
+)
+
 type EventServiceImpl struct {
-	repository   repository.UserRepository
+	repository   repository.EventRepository
 	tokenUseCase helper.TokenUseCase
 }
 
-func (service *EventServiceImpl) GetEventList() ([]entity.UserEntity, error) {
-	getEventList, errGetEventList := service.repository.GetUsers()
+func (service *EventServiceImpl) GetEventList() ([]entity.EventEntity, error) {
+	getEventList, errGetEventList := service.repository.GetEvents()
 
 	if errGetEventList != nil {
-		return []entity.UserEntity{}, errGetEventList
+		return []entity.EventEntity{}, errGetEventList
 	}
 
-	return entity.ToUserListEntity(getEventList), nil
+	return entity.ToEventListEntity(getEventList), nil
 }
