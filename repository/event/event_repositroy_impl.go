@@ -24,7 +24,7 @@ func (repo *EventRepositoryImpl) GetEvents() ([]domain.Events, error) {
 }
 
 func (repo *EventRepositoryImpl) DeleteEvent(event domain.Events) (domain.Events, error) {
-	err := repo.db.Model(domain.Events{}).Where("id=?", event.EventID).Delete(event).Error
+	err := repo.db.Model(domain.Events{}).Where("id=?", event.ID).Delete(event).Error
 
 	if err != nil {
 		return event, err

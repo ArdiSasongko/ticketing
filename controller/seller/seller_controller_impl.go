@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ArdiSasongko/ticketing_app/model"
+	"github.com/ArdiSasongko/ticketing_app/helper"
 	web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	service "github.com/ArdiSasongko/ticketing_app/service/seller"
 	"github.com/labstack/echo"
@@ -20,10 +20,10 @@ func (controller *SellerControllerImpl) GetSeller(c echo.Context) error {
 	getSeller, errGetSeller := controller.SellerService.GetSeller(id)
 
 	if errGetSeller != nil {
-		return c.JSON(http.StatusNotFound, model.ResponseToClient(http.StatusNotFound, errGetSeller.Error(), nil))
+		return c.JSON(http.StatusNotFound, helper.ResponseClient(http.StatusNotFound, errGetSeller.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", getSeller))
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "success", getSeller))
 }
 
 func (controller *SellerControllerImpl) UpdateSeller(c echo.Context) error {
@@ -32,14 +32,14 @@ func (controller *SellerControllerImpl) UpdateSeller(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	if err := c.Bind(seller); err != nil {
-		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
 	sellerUpdate, errSellerUpdate := controller.SellerService.UpdateSeller(*seller, id)
 
 	if errSellerUpdate != nil {
-		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, errSellerUpdate.Error(), nil))
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, errSellerUpdate.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "data berhasil diupdate", sellerUpdate))
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "data berhasil diupdate", sellerUpdate))
 }
