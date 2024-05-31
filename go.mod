@@ -6,6 +6,8 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible
 	gorm.io/driver/postgres v1.5.7
 	gorm.io/gorm v1.25.10
+	github.com/labstack/echo/v4 v4.12.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 )
 
 require (
