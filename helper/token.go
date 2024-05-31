@@ -6,13 +6,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type TokenUseCaseInterface interface {
-	GeneratedToken(claims CustomClaims) (string, error)
-	DecodeToken(tokenString string) (*jwt.Token, error)
-}
-
-type TokenUseCaseImpl struct{}
-
 type CustomClaims struct {
 	UserID int    `json:"user_id"`
 	Name   string `json:"name"`
@@ -20,17 +13,21 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func NewTokenUseCase() *TokenUseCaseImpl {
-	return &TokenUseCaseImpl{}
+type TokenUseCaseInterface interface {
+	GeneraredToken(claims CustomClaims) (string, error)
 }
 
-func (t *TokenUseCaseImpl) GeneratedToken(claims CustomClaims) (string, error) {
+type TokenUseCase struct{}
+
+func NewTokenUseCase() *TokenUseCase {
+	return &TokenUseCase{}
+}
+
+func (t *TokenUseCase) GeneraredToken(claims CustomClaims) (string, error) {
 	plainToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, errToken := plainToken.SignedString([]byte(os.Getenv("SECRET_KEY")))
-
-	if errToken != nil {
-		return "", errToken
+	token, err := plainToken.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	if err != nil {
+		return "", err
 	}
-
 	return token, nil
 }
