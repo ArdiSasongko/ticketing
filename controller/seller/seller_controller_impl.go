@@ -14,6 +14,18 @@ type SellerControllerImpl struct {
 	SellerService service.SellerService
 }
 
+func (controller *SellerControllerImpl) GetSeller(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	getSeller, errGetSeller := controller.SellerService.GetSeller(id)
+
+	if errGetSeller != nil {
+		return c.JSON(http.StatusNotFound, model.ResponseToClient(http.StatusNotFound, errGetSeller.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", getSeller))
+}
+
 func (controller *SellerControllerImpl) UpdateSeller(c echo.Context) error {
 
 	seller := new(web.SellerUpdateServiceRequest)
