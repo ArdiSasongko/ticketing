@@ -75,7 +75,7 @@ func (bS *BuyerService) Login(email, password string) (helper.CustomResponse, er
 		},
 	}
 
-	token, errToken := bS.Token.GeneratedToken(claims)
+	token, errToken := bS.Token.GeneraredToken(claims)
 
 	if errToken != nil {
 		return nil, errToken
