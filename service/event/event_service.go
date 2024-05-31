@@ -6,6 +6,6 @@ import (
 )
 
 type EventService interface {
-	GetUserList() ([]entity.EventEntity, error)
+	GetEventList() ([]entity.EventEntity, error)
 	DeleteEvent(request web.EventDeleteServiceRequest, pathId int) (map[string]interface{}, error)
 }
