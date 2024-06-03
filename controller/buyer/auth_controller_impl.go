@@ -2,6 +2,7 @@ package buyer
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
@@ -55,4 +56,30 @@ func (bC *BuyerController) Login(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", userLogin))
+}
+
+func (bC *BuyerController) Update(c echo.Context) error {
+	userID, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	updateUser := new(buyer.BuyerUpdateRequest)
+
+	if err := c.Bind(updateUser); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	if err := c.Validate(updateUser); err != nil {
+		return err
+	}
+
+	result, err := bC.Service.Update(userID, *updateUser)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
 }

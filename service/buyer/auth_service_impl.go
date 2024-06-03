@@ -88,3 +88,43 @@ func (bS *BuyerService) Login(email, password string) (helper.CustomResponse, er
 
 	return data, nil
 }
+
+func (bS *BuyerService) Update(userId int, req buyerreq.BuyerUpdateRequest) (helper.CustomResponse, error) {
+	buyer, errBuyer := bS.Repo.GetByID(userId)
+
+	if errBuyer != nil {
+		return nil, errBuyer
+	}
+
+	if req.Name != "" {
+		buyer.Name = req.Name
+	}
+
+	if req.Email != "" {
+		buyer.Email = req.Email
+	}
+
+	if req.Password != "" {
+		passHash, errHash := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.MinCost)
+
+		if errHash != nil {
+			return nil, errHash
+		}
+
+		buyer.Password = string(passHash)
+	}
+
+	result, errUpdate := bS.Repo.Update(userId, buyer)
+
+	if errUpdate != nil {
+		return nil, errUpdate
+	}
+
+	data := helper.CustomResponse{
+		"name":     result.Name,
+		"email":    result.Email,
+		"password": result.Password,
+	}
+
+	return data, nil
+}

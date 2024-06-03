@@ -8,4 +8,5 @@ import (
 type BuyerServiceInterface interface {
 	Register(req buyerreq.BuyerRequest) (helper.CustomResponse, error)
 	Login(email, password string) (helper.CustomResponse, error)
+	Update(userId int, req buyerreq.BuyerUpdateRequest) (helper.CustomResponse, error)
 }

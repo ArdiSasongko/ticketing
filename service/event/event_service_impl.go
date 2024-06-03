@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/ArdiSasongko/ticketing_app/helper"
 	entity "github.com/ArdiSasongko/ticketing_app/model/entity/event"
 	repository "github.com/ArdiSasongko/ticketing_app/repository/event"
 )
