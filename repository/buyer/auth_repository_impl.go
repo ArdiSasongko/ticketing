@@ -34,3 +34,19 @@ func (bR *BuyerRepo) GetEmail(email string) (domain.Buyers, error) {
 	}
 	return buyer, nil
 }
+
+func (bR *BuyerRepo) Update(userID int, buyer domain.Buyers) (domain.Buyers, error) {
+	if err := bR.DB.Model(&domain.Buyers{}).Where("id = ?", userID).Updates(buyer).Error; err != nil {
+		return domain.Buyers{}, errors.New("failed to update buyer")
+	}
+
+	return buyer, nil
+}
+
+func (bR *BuyerRepo) GetByID(userID int) (domain.Buyers, error) {
+	var buyer domain.Buyers
+	if err := bR.DB.Where("id = ?", userID).Take(&buyer).Error; err != nil {
+		return domain.Buyers{}, errors.New("buyer not found")
+	}
+	return buyer, nil
+}

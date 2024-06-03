@@ -3,14 +3,14 @@ module github.com/ArdiSasongko/ticketing_app
 go 1.22.1
 
 require (
-	github.com/labstack/echo v3.3.10+incompatible
-	gorm.io/driver/postgres v1.5.7
-	gorm.io/gorm v1.25.10
-	github.com/labstack/echo/v4 v4.12.0
-	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.20.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/joho/godotenv v1.5.1
+	github.com/labstack/echo v3.3.10+incompatible
+	github.com/labstack/echo/v4 v4.12.0
+	gorm.io/driver/postgres v1.5.7
+	gorm.io/gorm v1.25.10
 
 )
 
