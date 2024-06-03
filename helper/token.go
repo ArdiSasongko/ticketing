@@ -1,33 +1,36 @@
 package helper
 
 import (
-	"os"
-
 	"github.com/golang-jwt/jwt/v5"
+	"os"
 )
 
-type CustomClaims struct {
-	UserID int    `json:"user_id"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
+type TokenUseCase interface {
+	GenerateAccessToken(claims JwtCustomClaims) (string, error)
+}
+
+type TokenUseCaseImpl struct{}
+
+type JwtCustomClaims struct {
+	ID    string `json:"user_id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-type TokenUseCaseInterface interface {
-	GeneraredToken(claims CustomClaims) (string, error)
+func NewTokenUseCase() *TokenUseCaseImpl {
+	return &TokenUseCaseImpl{}
 }
 
-type TokenUseCase struct{}
+func (t *TokenUseCaseImpl) GenerateAccessToken(claims JwtCustomClaims) (string, error) {
 
-func NewTokenUseCase() *TokenUseCase {
-	return &TokenUseCase{}
-}
-
-func (t *TokenUseCase) GeneraredToken(claims CustomClaims) (string, error) {
 	plainToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := plainToken.SignedString([]byte(os.Getenv("SECRET_KEY")))
+
+	encodedToken, err := plainToken.SignedString([]byte(os.Getenv("SECRET_KEY")))
+
 	if err != nil {
 		return "", err
 	}
-	return token, nil
+
+	return encodedToken, nil
 }
