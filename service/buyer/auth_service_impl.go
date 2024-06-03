@@ -2,6 +2,7 @@ package buyer
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
@@ -14,10 +15,10 @@ import (
 
 type BuyerService struct {
 	Repo  buyer.BuyerRepositoryInterface
-	Token helper.TokenUseCaseInterface
+	Token helper.TokenUseCase
 }
 
-func NewBuyerService(repo buyer.BuyerRepositoryInterface, token helper.TokenUseCaseInterface) *BuyerService {
+func NewBuyerService(repo buyer.BuyerRepositoryInterface, token helper.TokenUseCase) *BuyerService {
 	return &BuyerService{
 		Repo:  repo,
 		Token: token,
@@ -65,17 +66,17 @@ func (bS *BuyerService) Login(email, password string) (helper.CustomResponse, er
 
 	expiredTime := time.Now().Add(5 * time.Minute)
 
-	claims := helper.CustomClaims{
-		UserID: user.BuyerID,
-		Name:   user.Name,
-		Email:  user.Email,
+	claims := helper.JwtCustomClaims{
+		ID:    strconv.Itoa(user.BuyerID),
+		Name:  user.Name,
+		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Echo",
 			ExpiresAt: jwt.NewNumericDate(expiredTime),
 		},
 	}
 
-	token, errToken := bS.Token.GeneraredToken(claims)
+	token, errToken := bS.Token.GenerateAccessToken(claims)
 
 	if errToken != nil {
 		return nil, errToken
