@@ -1,4 +1,4 @@
-package buyer
+package buyer_repository
 
 import (
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
@@ -6,19 +6,19 @@ import (
 )
 
 type EventRepositoryImpl struct {
-	eventQueryBuilder buyer.EventQueryBuilder
+	eventQueryBuilder buyer_query_builder.EventQueryBuilder
 }
 
-func NewEventRepository(eventQueryBuilder buyer.EventQueryBuilder) *EventRepositoryImpl {
+func NewEventRepository(eventQueryBuilder buyer_query_builder.EventQueryBuilder) *EventRepositoryImpl {
 	return &EventRepositoryImpl{
 		eventQueryBuilder: eventQueryBuilder,
 	}
 }
 
-func (repository *EventRepositoryImpl) ListEvents(filters map[string]string, sort string, limit int, page int) ([]domain.Events, error) {
+func (repo *EventRepositoryImpl) ListEvents(filters map[string]string, sort string, limit int, page int) ([]domain.Events, error) {
 	var events []domain.Events
 
-	eventQueryBuilder, err := repository.eventQueryBuilder.GetBuilder(filters, sort, limit, page)
+	eventQueryBuilder, err := repo.eventQueryBuilder.GetBuilder(filters, sort, limit, page)
 	if err != nil {
 		return nil, err
 	}

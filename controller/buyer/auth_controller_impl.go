@@ -1,4 +1,4 @@
-package buyer
+package buyer_controller
 
 import (
 	"net/http"
@@ -6,20 +6,20 @@ import (
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
-	buyerservice "github.com/ArdiSasongko/ticketing_app/service/buyer"
+	"github.com/ArdiSasongko/ticketing_app/service/buyer"
 	"github.com/labstack/echo/v4"
 )
 
-type BuyerController struct {
-	Service buyerservice.BuyerServiceInterface
+type BuyerControllerImpl struct {
+	Service buyer_service.BuyerServiceInterface
 }
 
-func NewBuyerController(service buyerservice.BuyerServiceInterface) *BuyerController {
-	return &BuyerController{Service: service}
+func NewBuyerControllerImpl(service buyer_service.BuyerServiceInterface) *BuyerControllerImpl {
+	return &BuyerControllerImpl{Service: service}
 }
 
-func (bC *BuyerController) Register(c echo.Context) error {
-	newUser := new(buyer.BuyerRequest)
+func (controller *BuyerControllerImpl) Register(c echo.Context) error {
+	newUser := new(buyer_web.BuyerRequest)
 
 	if err := c.Bind(newUser); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
@@ -29,7 +29,7 @@ func (bC *BuyerController) Register(c echo.Context) error {
 		return err
 	}
 
-	result, err := bC.Service.Register(*newUser)
+	result, err := controller.Service.Register(*newUser)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
@@ -38,8 +38,8 @@ func (bC *BuyerController) Register(c echo.Context) error {
 	return c.JSON(http.StatusCreated, helper.ResponseClient(http.StatusCreated, "Success", result))
 }
 
-func (bC *BuyerController) Login(c echo.Context) error {
-	loginUser := new(buyer.BuyerLoginRequest)
+func (controller *BuyerControllerImpl) Login(c echo.Context) error {
+	loginUser := new(buyer_web.BuyerLoginRequest)
 
 	if err := c.Bind(loginUser); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
@@ -49,7 +49,7 @@ func (bC *BuyerController) Login(c echo.Context) error {
 		return err
 	}
 
-	userLogin, errLogin := bC.Service.Login(loginUser.Email, loginUser.Password)
+	userLogin, errLogin := controller.Service.Login(loginUser.Email, loginUser.Password)
 
 	if errLogin != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, errLogin.Error(), nil))
@@ -58,14 +58,14 @@ func (bC *BuyerController) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", userLogin))
 }
 
-func (bC *BuyerController) Update(c echo.Context) error {
+func (controller *BuyerControllerImpl) Update(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	updateUser := new(buyer.BuyerUpdateRequest)
+	updateUser := new(buyer_web.BuyerUpdateRequest)
 
 	if err := c.Bind(updateUser); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
@@ -75,7 +75,7 @@ func (bC *BuyerController) Update(c echo.Context) error {
 		return err
 	}
 
-	result, err := bC.Service.Update(userID, *updateUser)
+	result, err := controller.Service.Update(userID, *updateUser)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))

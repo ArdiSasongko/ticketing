@@ -1,4 +1,4 @@
-package entity
+package event_entity
 
 import "github.com/ArdiSasongko/ticketing_app/model/domain"
 

@@ -1,4 +1,4 @@
-package seller
+package seller_web
 
 type SellerLoginRequest struct {
 	Email    string `validate:"email" json:"email"`

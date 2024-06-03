@@ -1,11 +1,11 @@
-package seller
+package seller_service
 
 import (
 	"errors"
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	entity "github.com/ArdiSasongko/ticketing_app/model/entity/seller"
-	sellerweb "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/seller"
+	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	"github.com/ArdiSasongko/ticketing_app/repository/seller"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -14,11 +14,11 @@ import (
 )
 
 type SellerServiceImpl struct {
-	repository   seller.SellerRepository
+	repository   seller_repository.SellerRepository
 	tokenUseCase helper.TokenUseCase
 }
 
-func NewSellerService(repository seller.SellerRepository, token helper.TokenUseCase) *SellerServiceImpl {
+func NewSellerService(repository seller_repository.SellerRepository, token helper.TokenUseCase) *SellerServiceImpl {
 	return &SellerServiceImpl{
 		repository:   repository,
 		tokenUseCase: token,
@@ -80,16 +80,16 @@ func (service *SellerServiceImpl) LoginSeller(email string, password string) (ma
 	return map[string]interface{}{"token": token}, nil
 }
 
-func (service *SellerServiceImpl) GetSeller(sellerId int) (entity.SellerEntity, error) {
+func (service *SellerServiceImpl) GetSeller(sellerId int) (seller_entity.SellerEntity, error) {
 	getSeller, errGetSeller := service.repository.GetSeller(sellerId)
 
 	if errGetSeller != nil {
-		return entity.SellerEntity{}, errGetSeller
+		return seller_entity.SellerEntity{}, errGetSeller
 	}
-	return entity.ToSellerEntity(getSeller.SellerID, getSeller.Name, getSeller.Email), nil
+	return seller_entity.ToSellerEntity(getSeller.SellerID, getSeller.Name, getSeller.Email), nil
 }
 
-func (service *SellerServiceImpl) UpdateSeller(request sellerweb.SellerUpdateServiceRequest, pathId int) (map[string]interface{}, error) {
+func (service *SellerServiceImpl) UpdateSeller(request seller_web.SellerUpdateServiceRequest, pathId int) (map[string]interface{}, error) {
 	getSellerById, err := service.repository.GetSeller(pathId)
 	if err != nil {
 		return nil, err

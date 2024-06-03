@@ -1,9 +1,9 @@
-package seller
+package seller_controller
 
 import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model"
-	sellerweb "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	"github.com/ArdiSasongko/ticketing_app/service/seller"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -11,17 +11,17 @@ import (
 )
 
 type SellerControllerImpl struct {
-	sellerService seller.SellerService
+	sellerService seller_service.SellerService
 }
 
-func NewSellerController(service seller.SellerService) *SellerControllerImpl {
+func NewSellerController(service seller_service.SellerService) *SellerControllerImpl {
 	return &SellerControllerImpl{
 		sellerService: service,
 	}
 }
 
 func (controller *SellerControllerImpl) SaveSeller(c echo.Context) error {
-	seller := new(seller.SellerServiceRequest)
+	seller := new(seller_web.SellerServiceRequest)
 
 	if err := c.Bind(seller); err != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
@@ -36,7 +36,7 @@ func (controller *SellerControllerImpl) SaveSeller(c echo.Context) error {
 }
 
 func (controller *SellerControllerImpl) LoginSeller(c echo.Context) error {
-	seller := new(seller.SellerLoginRequest)
+	seller := new(seller_web.SellerLoginRequest)
 
 	if err := c.Bind(&seller); err != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
@@ -62,7 +62,7 @@ func (controller *SellerControllerImpl) GetSeller(c echo.Context) error {
 
 func (controller *SellerControllerImpl) UpdateSeller(c echo.Context) error {
 
-	seller := new(sellerweb.SellerUpdateServiceRequest)
+	seller := new(seller_web.SellerUpdateServiceRequest)
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	if err := c.Bind(seller); err != nil {

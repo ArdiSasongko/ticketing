@@ -1,4 +1,4 @@
-package entity
+package buyer_entity
 
 import (
 	"time"

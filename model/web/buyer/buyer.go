@@ -1,4 +1,4 @@
-package buyer
+package buyer_web
 
 type BuyerRequest struct {
 	Name     string `validate:"required" json:"name"`

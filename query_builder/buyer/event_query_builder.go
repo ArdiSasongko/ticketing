@@ -1,7 +1,7 @@
-package buyer
+package buyer_query_builder
 
 import (
-	querybuilder "github.com/ArdiSasongko/ticketing_app/query_builder"
+	"github.com/ArdiSasongko/ticketing_app/query_builder"
 	"gorm.io/gorm"
 )
 

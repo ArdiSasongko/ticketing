@@ -1,4 +1,4 @@
-package buyer
+package buyer_controller
 
 import (
 	"net/http"
@@ -6,14 +6,14 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model"
 	"github.com/ArdiSasongko/ticketing_app/service/buyer"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type EventControllerImpl struct {
-	eventService buyer.EventService
+	eventService buyer_service.EventService
 }
 
-func NewEventController(service buyer.EventService) *EventControllerImpl {
+func NewEventController(service buyer_service.EventService) *EventControllerImpl {
 	return &EventControllerImpl{
 		eventService: service,
 	}

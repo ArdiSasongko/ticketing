@@ -1,4 +1,4 @@
-package repository
+package event_repository
 
 import "github.com/ArdiSasongko/ticketing_app/model/domain"
 

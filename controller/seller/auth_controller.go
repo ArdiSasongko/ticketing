@@ -1,4 +1,4 @@
-package seller
+package seller_controller
 
 import "github.com/labstack/echo/v4"
 

@@ -1,4 +1,4 @@
-package web
+package event_web
 
 import "gorm.io/gorm"
 

@@ -1,11 +1,11 @@
-package service
+package event_service
 
 import (
-	entity "github.com/ArdiSasongko/ticketing_app/model/entity/event"
-	web "github.com/ArdiSasongko/ticketing_app/model/web/event"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/event"
+	"github.com/ArdiSasongko/ticketing_app/model/web/event"
 )
 
 type EventService interface {
-	GetEventList() ([]entity.EventEntity, error)
-	DeleteEvent(request web.EventDeleteServiceRequest, pathId int) (map[string]interface{}, error)
+	GetEventList() ([]event_entity.EventEntity, error)
+	DeleteEvent(request event_web.EventDeleteServiceRequest, pathId int) (map[string]interface{}, error)
 }

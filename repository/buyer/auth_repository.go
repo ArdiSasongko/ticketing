@@ -1,4 +1,4 @@
-package buyer
+package buyer_repository
 
 import "github.com/ArdiSasongko/ticketing_app/model/domain"
 

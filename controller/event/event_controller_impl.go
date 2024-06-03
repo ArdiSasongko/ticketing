@@ -1,4 +1,4 @@
-package controller
+package event_controller
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	web "github.com/ArdiSasongko/ticketing_app/model/web/event"
 	service "github.com/ArdiSasongko/ticketing_app/service/event"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type EventControllerImpl struct {

@@ -1,4 +1,4 @@
-package seller
+package seller_repository
 
 import (
 	"errors"

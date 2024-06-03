@@ -1,4 +1,4 @@
-package seller
+package seller_web
 
 type SellerUpdateServiceRequest struct {
 	Name  string `validate:"required" json:"name"`

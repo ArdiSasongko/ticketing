@@ -1,4 +1,4 @@
-package seller
+package seller_query_builder
 
 import (
 	querybuilder "github.com/ArdiSasongko/ticketing_app/query_builder"

@@ -1,4 +1,4 @@
-package entity
+package seller_entity
 
 type SellerEntity struct {
 	SellerID int    `json:"id"`
