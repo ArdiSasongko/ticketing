@@ -12,17 +12,30 @@ CREATE TABLE seller (
     password VARCHAR(255) NOT NULL
 );
 
+-- CREATE TABLE event (
+--     id SERIAL PRIMARY KEY,
+--     seller_id INTEGER NOT NULL,
+--     name VARCHAR(255) NOT NULL,
+--     date DATE NOT NULL,
+--     location VARCHAR(255) NOT NULL,
+--     qty INTEGER NOT NULL,
+--     category VARCHAR(255) NOT NULL,
+--     price NUMERIC(19, 2) NOT NULL,
+--     constraint seller_id FOREIGN KEY (seller_id) REFERENCES seller(id)
+-- );
+
 CREATE TABLE event (
     id SERIAL PRIMARY KEY,
     seller_id INTEGER NOT NULL,
-    name VARCHAR(255) UNIQUE NOT NULL,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    location VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    location VARCHAR(255) NOT NULL,
     qty INTEGER NOT NULL,
-    category VARCHAR(255) UNIQUE NOT NULL,
+    category VARCHAR(255) NOT NULL,
     price NUMERIC(19, 2) NOT NULL,
-    constraint seller_id FOREIGN KEY (seller_id) REFERENCES seller(id)
+    CONSTRAINT fk_event_seller FOREIGN KEY (seller_id) REFERENCES seller(id)
 );
+
 
 CREATE TABLE ticket (
     id SERIAL PRIMARY KEY,

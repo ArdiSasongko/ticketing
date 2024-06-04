@@ -7,6 +7,7 @@ type Sellers struct {
 	Name      string `gorm:"column:name"`
 	Email     string `gorm:"column:email"`
 	Password  string `gorm:"column:password"`
+	Events   []Events `gorm:"foreignKey:SellerID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
