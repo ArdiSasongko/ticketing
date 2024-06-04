@@ -25,7 +25,7 @@ func NewSellerService(repository seller_repository.SellerRepository, token helpe
 	}
 }
 
-func (service *SellerServiceImpl) SaveSeller(request SellerServiceRequest) (map[string]interface{}, error) {
+func (service *SellerServiceImpl) SaveSeller(request seller_web.SellerServiceRequest) (map[string]interface{}, error) {
 	passHash, errHash := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
 	if errHash != nil {
 		return nil, errHash

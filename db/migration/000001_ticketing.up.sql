@@ -2,37 +2,31 @@ CREATE TABLE buyer (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ(6),
+    updated_at TIMESTAMPTZ(6)
 );
 
 CREATE TABLE seller (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ(6),
+    updated_at TIMESTAMPTZ(6)
 );
-
--- CREATE TABLE event (
---     id SERIAL PRIMARY KEY,
---     seller_id INTEGER NOT NULL,
---     name VARCHAR(255) NOT NULL,
---     date DATE NOT NULL,
---     location VARCHAR(255) NOT NULL,
---     qty INTEGER NOT NULL,
---     category VARCHAR(255) NOT NULL,
---     price NUMERIC(19, 2) NOT NULL,
---     constraint seller_id FOREIGN KEY (seller_id) REFERENCES seller(id)
--- );
 
 CREATE TABLE event (
     id SERIAL PRIMARY KEY,
     seller_id INTEGER NOT NULL,
     name VARCHAR(255) NOT NULL,
-    date DATE NOT NULL,
+    date TIMESTAMPTZ(6) NOT NULL,
     location VARCHAR(255) NOT NULL,
     qty INTEGER NOT NULL,
     category VARCHAR(255) NOT NULL,
     price NUMERIC(19, 2) NOT NULL,
+    created_at TIMESTAMPTZ(6),
+    updated_at TIMESTAMPTZ(6),
     CONSTRAINT fk_event_seller FOREIGN KEY (seller_id) REFERENCES seller(id)
 );
 
@@ -44,7 +38,7 @@ CREATE TABLE ticket (
     date TIMESTAMPTZ(6) NOT NULL,
     location VARCHAR(255) NOT NULL,
     qty INT NOT NULL,
-    price NUMERIC(19,2) NOT NULL,
+    price NUMERIC(19, 2) NOT NULL,
     created_at TIMESTAMPTZ(6) NOT NULL,
     updated_at TIMESTAMPTZ(6) NOT NULL,
     CONSTRAINT fk_event FOREIGN KEY(event_id) REFERENCES event(id),

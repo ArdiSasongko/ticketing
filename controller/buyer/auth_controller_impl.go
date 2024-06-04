@@ -14,7 +14,7 @@ type BuyerControllerImpl struct {
 	Service buyer_service.BuyerServiceInterface
 }
 
-func NewBuyerControllerImpl(service buyer_service.BuyerServiceInterface) *BuyerControllerImpl {
+func NewBuyerController(service buyer_service.BuyerServiceInterface) *BuyerControllerImpl {
 	return &BuyerControllerImpl{Service: service}
 }
 

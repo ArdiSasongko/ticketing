@@ -1,7 +1,10 @@
 package seller_controller
 
 import (
+	"github.com/ArdiSasongko/ticketing_app/model"
+	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	"net/http"
+	"strconv"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/service/seller"
@@ -27,4 +30,53 @@ func (controller *EventControllerImpl) GetEventList(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "success", events))
+}
+
+func (controller *EventControllerImpl) SaveEvents(c echo.Context) error {
+	events := new(seller_web.CreateEventsRequest)
+
+	if err := c.Bind(events); err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	if err := c.Validate(events); err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	saveEvents, errSaveEvents := controller.eventService.SaveEvents(*events)
+
+	if errSaveEvents != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, errSaveEvents.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Successfully created event", saveEvents))
+}
+
+// update
+func (controller *EventControllerImpl) UpdateEvent(c echo.Context) error {
+	// Mengambil ID acara dari parameter rute
+	eventID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, "Invalid event ID", nil))
+	}
+
+	// Mengikat data dari permintaan ke struktur UserUpdateServiceRequest
+	updateRequest := new(seller_web.UserUpdateServiceRequest)
+	if err := c.Bind(updateRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	// Melakukan validasi data yang diikat
+	if err := c.Validate(updateRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	// Memanggil layanan untuk melakukan pembaruan acara
+	updatedEvent, err := controller.eventService.UpdateEvent(*updateRequest, eventID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	// Mengembalikan respons dengan data acara yang diperbarui
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Successfully updated event", updatedEvent))
 }

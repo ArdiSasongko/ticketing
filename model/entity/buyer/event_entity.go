@@ -10,16 +10,16 @@ type EventEntity struct {
 	ID        int       `json:"id"`
 	SellerID  int       `json:"seller_id"`
 	Name      string    `json:"name"`
-	Date      string    `json:"date"`
+	Date      time.Time `json:"date"`
 	Location  string    `json:"location"`
 	Qty       int       `json:"column:qty"`
 	Category  string    `json:"column:category"`
-	Price     float32   `json:"column:price"`
+	Price     float64   `json:"column:price"`
 	CreatedAt time.Time `json:"column:created_at"`
 	UpdatedAt time.Time `json:"column:updated_at"`
 }
 
-func ToEventEntity(event domain.Events) EventEntity {
+func ToEventEntity(event domain.Event) EventEntity {
 	return EventEntity{
 		ID:        event.ID,
 		SellerID:  event.SellerID,
@@ -34,7 +34,7 @@ func ToEventEntity(event domain.Events) EventEntity {
 	}
 }
 
-func ToEventListEntity(events []domain.Events) []EventEntity {
+func ToEventListEntity(events []domain.Event) []EventEntity {
 	eventList := []EventEntity{}
 
 	for _, event := range events {

@@ -42,7 +42,7 @@ func (repo *SellerRepositoryImpl) GetSeller(Id int) (domain.Sellers, error) {
 	return sellerData, nil
 }
 
-func (repo *SellerRepositoryImpl) UpdateUser(seller domain.Sellers) (domain.Sellers, error) {
+func (repo *SellerRepositoryImpl) UpdateSeller(seller domain.Sellers) (domain.Sellers, error) {
 	err := repo.db.Model(domain.Sellers{}).Where("user_id=?", seller.SellerID).Updates(seller).Error
 
 	if err != nil {

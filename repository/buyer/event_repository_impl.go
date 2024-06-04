@@ -15,8 +15,8 @@ func NewEventRepository(eventQueryBuilder buyer_query_builder.EventQueryBuilder)
 	}
 }
 
-func (repo *EventRepositoryImpl) ListEvents(filters map[string]string, sort string, limit int, page int) ([]domain.Events, error) {
-	var events []domain.Events
+func (repo *EventRepositoryImpl) ListEvents(filters map[string]string, sort string, limit int, page int) ([]domain.Event, error) {
+	var events []domain.Event
 
 	eventQueryBuilder, err := repo.eventQueryBuilder.GetBuilder(filters, sort, limit, page)
 	if err != nil {
@@ -25,7 +25,7 @@ func (repo *EventRepositoryImpl) ListEvents(filters map[string]string, sort stri
 
 	err1 := eventQueryBuilder.Find(&events).Error
 	if err1 != nil {
-		return []domain.Events{}, err1
+		return []domain.Event{}, err1
 	}
 	return events, nil
 }

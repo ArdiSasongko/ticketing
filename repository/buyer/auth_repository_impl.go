@@ -12,7 +12,7 @@ type BuyerRepo struct {
 	DB *gorm.DB
 }
 
-func NewBuyerRepo(db *gorm.DB) *BuyerRepo {
+func NewBuyerRepository(db *gorm.DB) *BuyerRepo {
 	return &BuyerRepo{
 		DB: db,
 	}
