@@ -50,3 +50,11 @@ func (repo *BuyerRepo) GetByID(userID int) (domain.Buyers, error) {
 	}
 	return buyer, nil
 }
+
+func (repo *BuyerRepo) GetList() ([]domain.Buyers, error) {
+	var buyers []domain.Buyers
+	if err := repo.DB.Find(&buyers).Error; err != nil {
+		return nil, errors.New("buyer not found")
+	}
+	return buyers, nil
+}

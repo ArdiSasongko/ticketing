@@ -25,7 +25,7 @@ func ToEventEntity(id int, name string, seller_id int, date string, location str
 		Price:     price,
 	}
 }
-func ToEventListEntity(events []domain.Events) []EventEntity {
+func ToEventListEntity(events []domain.Event) []EventEntity {
 	eventData := []EventEntity{}
 
 	for _, event := range events {
