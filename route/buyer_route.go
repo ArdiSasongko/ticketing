@@ -31,5 +31,5 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	meRoute.POST("/update", buyerAuthController.Update)
 
 	eventRoute := g.Group("/events")
-	eventRoute.GET("/", buyerEventController.GetEventList)
+	eventRoute.GET("", buyerEventController.GetEventList)
 }

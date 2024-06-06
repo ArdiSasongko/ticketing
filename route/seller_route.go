@@ -28,11 +28,11 @@ func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	authRoute.POST("/login", sellerAuthController.LoginSeller)
 
 	meRoute := g.Group("/me")
-	meRoute.POST("/seller/me", sellerAuthController.GetSeller)
-	meRoute.POST("/seller/me/update", sellerAuthController.UpdateSeller)
+	meRoute.POST("", sellerAuthController.GetSeller)
+	meRoute.POST("/update", sellerAuthController.UpdateSeller)
 
 	eventRoute := g.Group("/events")
-	eventRoute.GET("/seller/events", sellerEventController.GetEventList)
-	eventRoute.POST("/seller/events", sellerEventController.SaveEvents)
-	eventRoute.POST("/seller/events/:id", sellerEventController.UpdateEvent)
+	eventRoute.GET("", sellerEventController.GetEventList)
+	eventRoute.POST("", sellerEventController.SaveEvents)
+	eventRoute.POST(":id", sellerEventController.UpdateEvent)
 }
