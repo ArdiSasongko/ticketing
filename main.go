@@ -7,7 +7,9 @@ import (
 
 func main() {
 	r := echo.New()
+
 	route.RegisterBuyerRoutes("/buyer", r)
+
 	route.RegisterSellerRoutes("/seller", r)
 
 	r.Logger.Fatal(r.Start(":8001"))
