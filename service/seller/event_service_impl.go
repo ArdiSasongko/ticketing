@@ -33,6 +33,23 @@ func (service *EventServiceImpl) SaveEvents(request seller_web.CreateEventsReque
 		return nil, err
 	}
 
+	if err := helper.ValidateName(request.Name); err != nil {
+        return nil, err
+    }
+
+	if err := helper.ValidateCategory(request.Category); err != nil {
+        return nil, err
+    }
+	if err := helper.ValidateLocation(request.Location);err != nil {
+        return nil, err
+    }
+	if err := helper.ValidateQty(request.Qty);err != nil {
+        return nil, err
+    }
+	if err := helper.ValidatePrice(request.Price);err != nil {
+        return nil, err
+    }
+
 	eventReq := domain.Event{
 		SellerID: request.SellerID,
 		Name:     request.Name,

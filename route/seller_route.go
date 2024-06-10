@@ -32,7 +32,7 @@ func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	meRoute.POST("/seller/me/update", sellerAuthController.UpdateSeller)
 
 	eventRoute := g.Group("/events")
-	eventRoute.GET("/seller/events", sellerEventController.GetEventList)
-	eventRoute.POST("/seller/events", sellerEventController.SaveEvents)
-	eventRoute.POST("/seller/events/:id", sellerEventController.UpdateEvent)
+	eventRoute.GET("/", sellerEventController.GetEventList)
+	eventRoute.POST("", sellerEventController.SaveEvents)
+	eventRoute.PUT("/:id", sellerEventController.UpdateEvent)
 }

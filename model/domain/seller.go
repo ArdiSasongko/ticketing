@@ -11,3 +11,6 @@ type Sellers struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+func (Sellers) TableName()string  {
+	return "seller"
+}

@@ -39,9 +39,6 @@ func (controller *EventControllerImpl) SaveEvents(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	if err := c.Validate(events); err != nil {
-		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
-	}
 
 	saveEvents, errSaveEvents := controller.eventService.SaveEvents(*events)
 
@@ -66,10 +63,7 @@ func (controller *EventControllerImpl) UpdateEvent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	// Melakukan validasi data yang diikat
-	if err := c.Validate(updateRequest); err != nil {
-		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
-	}
+
 
 	// Memanggil layanan untuk melakukan pembaruan acara
 	updatedEvent, err := controller.eventService.UpdateEvent(*updateRequest, eventID)
