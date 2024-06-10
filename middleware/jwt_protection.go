@@ -1,13 +1,14 @@
 package middleware
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model"
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
-	"net/http"
-	"os"
 )
 
 func JWTProtection() echo.MiddlewareFunc {

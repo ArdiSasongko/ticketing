@@ -11,4 +11,6 @@ type OrderRepositoryInterface interface {
 	CopyEvent() ([]buyer_entity.EventEntity, error)
 	PasteHistory(destinations []buyer_entity.HistoryItemEntity) error
 	GetLatestOrder() (*buyer_entity.HistoryEntity, error)
+	GetOrderByID(BuyyerIDFK uint) (*buyer_entity.HistoryEntity, error)
+	UpdateOrder(order *buyer_entity.HistoryEntity) error
 }

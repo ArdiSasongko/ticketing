@@ -107,3 +107,23 @@ func (service *Order) GenerateOrderNumber() (string, error) {
 
 	return invoiceNumber, nil
 }
+
+func (service *Order) PayOrder(BuyyerIDFK uint) (*buyer_entity.HistoryEntity, error) {
+	order, err := service.Repo.GetOrderByID(BuyyerIDFK)
+	if err != nil {
+		return nil, err
+	}
+
+	if order.PaymentStatus == buyer_entity.HistoryEntity.OrderPaymentStatusPaid {
+		return order, nil // Order already paid, nothing to update
+	}
+
+	order.PaymentStatus = buyer_entity.HistoryEntity.OrderPaymentStatusPaid
+	order.Status = 1
+
+	if err := service.Repo.UpdateOrder(order); err != nil {
+		return nil, err
+	}
+
+	return order, nil
+}

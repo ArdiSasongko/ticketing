@@ -38,3 +38,15 @@ func (r *Order) GetLatestOrder() (*buyer_entity.HistoryItemEntity, error) {
 	}
 	return &latestOrder, nil
 }
+
+func (r *Order) GetOrderByID(BuyyerIDFK uint) (*buyer_entity.HistoryEntity, error) {
+	var order buyer_entity.HistoryEntity
+	if err := r.DB.First(&order, BuyyerIDFK).Error; err != nil {
+		return nil, err
+	}
+	return &order, nil
+}
+
+func (r *Order) UpdateOrder(order *buyer_entity.HistoryEntity) error {
+	return r.DB.Save(order).Error
+}

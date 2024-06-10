@@ -10,4 +10,5 @@ type OrderService interface {
 	GenerateHistoryItem() error
 	GenerateOrderNumber() (string, error)
 	GetLatestOrder() ([]buyer_entity.HistoryItemEntity, error)
+	PayOrder(BuyyerIDFK uint) (*buyer_entity.HistoryEntity, error)
 }
