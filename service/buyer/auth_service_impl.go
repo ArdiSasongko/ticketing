@@ -2,13 +2,14 @@ package buyer_service
 
 import (
 	"errors"
-	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
 	"strconv"
 	"time"
 
+	buyer_repository "github.com/ArdiSasongko/ticketing_app/repository/buyer"
+
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
+	buyer_web "github.com/ArdiSasongko/ticketing_app/model/web/buyer"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )

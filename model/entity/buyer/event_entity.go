@@ -12,11 +12,11 @@ type EventEntity struct {
 	Name      string    `json:"name"`
 	Date      time.Time `json:"date"`
 	Location  string    `json:"location"`
-	Qty       int       `json:"column:qty"`
-	Category  string    `json:"column:category"`
-	Price     float64   `json:"column:price"`
-	CreatedAt time.Time `json:"column:created_at"`
-	UpdatedAt time.Time `json:"column:updated_at"`
+	Qty       int       `json:"qty"`
+	Category  string    `json:"category"`
+	Price     float64   `json:"price"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func ToEventEntity(event domain.Event) EventEntity {
