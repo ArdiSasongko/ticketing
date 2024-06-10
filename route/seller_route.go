@@ -4,6 +4,7 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/app"
 	"github.com/ArdiSasongko/ticketing_app/controller/seller"
 	"github.com/ArdiSasongko/ticketing_app/helper"
+	"github.com/ArdiSasongko/ticketing_app/middleware"
 	"github.com/ArdiSasongko/ticketing_app/query_builder/seller"
 	"github.com/ArdiSasongko/ticketing_app/repository/seller"
 	"github.com/ArdiSasongko/ticketing_app/service/seller"
@@ -27,11 +28,11 @@ func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	authRoute.POST("/register", sellerAuthController.SaveSeller)
 	authRoute.POST("/login", sellerAuthController.LoginSeller)
 
-	meRoute := g.Group("/me")
+	meRoute := g.Group("/me", middleware.JWTProtection())
 	meRoute.POST("", sellerAuthController.GetSeller)
 	meRoute.POST("/update", sellerAuthController.UpdateSeller)
 
-	eventRoute := g.Group("/events")
+	eventRoute := g.Group("/events", middleware.JWTProtection())
 	eventRoute.GET("", sellerEventController.GetEventList)
 	eventRoute.POST("", sellerEventController.SaveEvents)
 	eventRoute.POST(":id", sellerEventController.UpdateEvent)

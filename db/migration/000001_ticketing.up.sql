@@ -7,7 +7,7 @@ CREATE TABLE buyer (
     updated_at TIMESTAMPTZ(6)
 );
 
-CREATE TABLE seller (
+CREATE TABLE sellers (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE event (
     price NUMERIC(19, 2) NOT NULL,
     created_at TIMESTAMPTZ(6),
     updated_at TIMESTAMPTZ(6),
-    CONSTRAINT fk_event_seller FOREIGN KEY (seller_id) REFERENCES seller(id)
+    CONSTRAINT fk_event_seller FOREIGN KEY (seller_id) REFERENCES sellers(id)
 );
 
 
