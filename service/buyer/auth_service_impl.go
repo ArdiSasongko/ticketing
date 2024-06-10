@@ -2,26 +2,32 @@ package buyer_service
 
 import (
 	"errors"
-	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
 	"strconv"
 	"time"
 
+	buyer_repository "github.com/ArdiSasongko/ticketing_app/repository/buyer"
+	history_repository "github.com/ArdiSasongko/ticketing_app/repository/history"
+
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
+	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	history_entity "github.com/ArdiSasongko/ticketing_app/model/entity/history"
+	buyer_web "github.com/ArdiSasongko/ticketing_app/model/web/buyer"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type BuyerService struct {
-	Repo  buyer_repository.BuyerRepositoryInterface
-	Token helper.TokenUseCase
+	Repo        buyer_repository.BuyerRepositoryInterface
+	HistoryRepo history_repository.HistoryRepo
+	Token       helper.TokenUseCase
 }
 
-func NewBuyerService(repo buyer_repository.BuyerRepositoryInterface, token helper.TokenUseCase) *BuyerService {
+func NewBuyerService(repo buyer_repository.BuyerRepositoryInterface, token helper.TokenUseCase, history history_repository.HistoryRepo) *BuyerService {
 	return &BuyerService{
-		Repo:  repo,
-		Token: token,
+		Repo:        repo,
+		HistoryRepo: history,
+		Token:       token,
 	}
 }
 
@@ -128,4 +134,24 @@ func (service *BuyerService) Update(userId int, req buyer_web.BuyerUpdateRequest
 	}
 
 	return data, nil
+}
+
+func (service *BuyerService) GetAll() ([]buyer_entity.BuyerEntity, error) {
+	result, err := service.Repo.GetList()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return buyer_entity.ToBuyerEntities(result), nil
+}
+
+func (service *BuyerService) GetHistory(userId int) ([]history_entity.HistoryEntity, error) {
+	result, err := service.HistoryRepo.GetHistory(userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return history_entity.ToHistoryEntities(result), nil
 }

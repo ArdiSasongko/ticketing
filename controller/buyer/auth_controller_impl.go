@@ -5,8 +5,9 @@ import (
 	"strconv"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
-	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
-	"github.com/ArdiSasongko/ticketing_app/service/buyer"
+	buyer_web "github.com/ArdiSasongko/ticketing_app/model/web/buyer"
+	buyer_service "github.com/ArdiSasongko/ticketing_app/service/buyer"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
@@ -76,6 +77,30 @@ func (controller *BuyerControllerImpl) Update(c echo.Context) error {
 	}
 
 	result, err := controller.Service.Update(userID, *updateUser)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
+}
+
+func (controller *BuyerControllerImpl) GetAll(c echo.Context) error {
+	result, err := controller.Service.GetAll()
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
+}
+
+func (controller *BuyerControllerImpl) GetHistory(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*helper.JwtCustomClaims)
+	userID, _ := strconv.Atoi(claims.ID)
+
+	result, err := controller.Service.GetHistory(userID)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
