@@ -2,9 +2,9 @@ package buyer_service
 
 import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
-	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	history_entity "github.com/ArdiSasongko/ticketing_app/model/entity/history"
-	buyer_web "github.com/ArdiSasongko/ticketing_app/model/web/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/history"
+	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
 )
 
 type BuyerServiceInterface interface {

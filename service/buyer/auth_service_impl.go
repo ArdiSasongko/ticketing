@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"time"
 
-	buyer_repository "github.com/ArdiSasongko/ticketing_app/repository/buyer"
-	history_repository "github.com/ArdiSasongko/ticketing_app/repository/history"
+	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
+	"github.com/ArdiSasongko/ticketing_app/repository/history"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	history_entity "github.com/ArdiSasongko/ticketing_app/model/entity/history"
-	buyer_web "github.com/ArdiSasongko/ticketing_app/model/web/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/history"
+	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
