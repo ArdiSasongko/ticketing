@@ -4,6 +4,7 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/app"
 	"github.com/ArdiSasongko/ticketing_app/controller/seller"
 	"github.com/ArdiSasongko/ticketing_app/helper"
+	"github.com/ArdiSasongko/ticketing_app/middleware"
 	"github.com/ArdiSasongko/ticketing_app/query_builder/seller"
 	"github.com/ArdiSasongko/ticketing_app/repository/seller"
 	"github.com/ArdiSasongko/ticketing_app/service/seller"
@@ -27,12 +28,12 @@ func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	authRoute.POST("/register", sellerAuthController.SaveSeller)
 	authRoute.POST("/login", sellerAuthController.LoginSeller)
 
-	meRoute := g.Group("/me")
-	meRoute.POST("/seller/me", sellerAuthController.GetSeller)
-	meRoute.POST("/seller/me/update", sellerAuthController.UpdateSeller)
+	meRoute := g.Group("/me", middleware.JWTProtection())
+	meRoute.POST("", sellerAuthController.GetSeller)
+	meRoute.POST("/update", sellerAuthController.UpdateSeller)
 
-	eventRoute := g.Group("/events")
-	eventRoute.GET("/seller/events", sellerEventController.GetEventList)
-	eventRoute.POST("/seller/events", sellerEventController.SaveEvents)
-	eventRoute.POST("/seller/events/:id", sellerEventController.UpdateEvent)
+	eventRoute := g.Group("/events", middleware.JWTProtection())
+	eventRoute.GET("", sellerEventController.GetEventList)
+	eventRoute.POST("", sellerEventController.SaveEvents)
+	eventRoute.POST(":id", sellerEventController.UpdateEvent, middleware.AccessUserID(*sellerEventRepo))
 }
