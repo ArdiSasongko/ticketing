@@ -3,9 +3,9 @@ package seller_service
 import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
-	"github.com/ArdiSasongko/ticketing_app/repository/seller"
+	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	seller_repository "github.com/ArdiSasongko/ticketing_app/repository/seller"
 )
 
 type EventServiceImpl struct {
@@ -27,31 +27,31 @@ func (service *EventServiceImpl) GetEventList(sellerId int, filters map[string]s
 	return buyer_entity.ToEventListEntity(events), nil
 }
 
-func (service *EventServiceImpl) SaveEvents(request seller_web.CreateEventsRequest) (map[string]interface{}, error) {
+func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.CreateEventsRequest) (map[string]interface{}, error) {
 	date, err := helper.ParseDate(request.Date)
 	if err != nil {
 		return nil, err
 	}
 
 	if err := helper.ValidateName(request.Name); err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
 	if err := helper.ValidateCategory(request.Category); err != nil {
-        return nil, err
-    }
-	if err := helper.ValidateLocation(request.Location);err != nil {
-        return nil, err
-    }
-	if err := helper.ValidateQty(request.Qty);err != nil {
-        return nil, err
-    }
-	if err := helper.ValidatePrice(request.Price);err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
+	if err := helper.ValidateLocation(request.Location); err != nil {
+		return nil, err
+	}
+	if err := helper.ValidateQty(request.Qty); err != nil {
+		return nil, err
+	}
+	if err := helper.ValidatePrice(request.Price); err != nil {
+		return nil, err
+	}
 
 	eventReq := domain.Event{
-		SellerID: request.SellerID,
+		SellerID: userID,
 		Name:     request.Name,
 		Date:     date,
 		Location: request.Location,

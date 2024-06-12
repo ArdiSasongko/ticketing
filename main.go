@@ -2,12 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/ArdiSasongko/ticketing_app/route"
-	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
 	"log"
 	"os"
+
+	"github.com/ArdiSasongko/ticketing_app/helper"
+	"github.com/ArdiSasongko/ticketing_app/route"
+	"github.com/go-playground/validator/v10"
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
 )
+
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cV *CustomValidator) Validate(i interface{}) error {
+	return cV.validator.Struct(i)
+}
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
@@ -15,6 +26,8 @@ func main() {
 	}
 
 	r := echo.New()
+	r.Validator = &CustomValidator{validator: validator.New()}
+	r.HTTPErrorHandler = helper.BindAndValidate
 
 	route.RegisterBuyerRoutes("/buyer", r)
 

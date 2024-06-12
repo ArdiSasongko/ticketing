@@ -1,13 +1,15 @@
 package seller_controller
 
 import (
-	"github.com/ArdiSasongko/ticketing_app/model"
-	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	"net/http"
 	"strconv"
 
+	"github.com/ArdiSasongko/ticketing_app/model"
+	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/ArdiSasongko/ticketing_app/helper"
-	"github.com/ArdiSasongko/ticketing_app/service/seller"
+	seller_service "github.com/ArdiSasongko/ticketing_app/service/seller"
 	"github.com/labstack/echo/v4"
 )
 
@@ -39,8 +41,11 @@ func (controller *EventControllerImpl) SaveEvents(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*helper.JwtCustomClaims)
+	userID, _ := strconv.Atoi(claims.ID)
 
-	saveEvents, errSaveEvents := controller.eventService.SaveEvents(*events)
+	saveEvents, errSaveEvents := controller.eventService.SaveEvents(userID, *events)
 
 	if errSaveEvents != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, errSaveEvents.Error(), nil))
@@ -62,8 +67,6 @@ func (controller *EventControllerImpl) UpdateEvent(c echo.Context) error {
 	if err := c.Bind(updateRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
-
-
 
 	// Memanggil layanan untuk melakukan pembaruan acara
 	updatedEvent, err := controller.eventService.UpdateEvent(*updateRequest, eventID)

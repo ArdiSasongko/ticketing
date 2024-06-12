@@ -10,3 +10,7 @@ type Buyers struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (Buyers) TableName() string {
+	return "buyer"
+}

@@ -2,12 +2,12 @@ package route
 
 import (
 	"github.com/ArdiSasongko/ticketing_app/app"
-	"github.com/ArdiSasongko/ticketing_app/controller/seller"
+	seller_controller "github.com/ArdiSasongko/ticketing_app/controller/seller"
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/middleware"
-	"github.com/ArdiSasongko/ticketing_app/query_builder/seller"
-	"github.com/ArdiSasongko/ticketing_app/repository/seller"
-	"github.com/ArdiSasongko/ticketing_app/service/seller"
+	seller_query_builder "github.com/ArdiSasongko/ticketing_app/query_builder/seller"
+	seller_repository "github.com/ArdiSasongko/ticketing_app/repository/seller"
+	seller_service "github.com/ArdiSasongko/ticketing_app/service/seller"
 	"github.com/labstack/echo/v4"
 )
 
