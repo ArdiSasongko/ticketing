@@ -5,12 +5,17 @@ import (
 	"strconv"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
+	buyer_service "github.com/ArdiSasongko/ticketing_app/service/order"
 	service "github.com/ArdiSasongko/ticketing_app/service/order"
 	"github.com/labstack/echo/v4"
 )
 
 type OrderControllerImpl struct {
 	OrderService service.OrderService
+}
+
+func NewOrderController(service buyer_service.OrderService) *OrderControllerImpl {
+	return &OrderControllerImpl{OrderService: service}
 }
 
 func (controller *OrderControllerImpl) Order(c echo.Context) error {

@@ -29,3 +29,8 @@ func ToHistoryEntity(history domain.History) HistoryEntity {
 		UpdatedAt:     history.UpdatedAt,
 	}
 }
+
+const (
+	OrderPaymentStatusPaid   = "paid"
+	OrderPaymentStatusUnpaid = "unpaid"
+)

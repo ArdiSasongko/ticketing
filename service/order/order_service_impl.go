@@ -16,6 +16,13 @@ type Order struct {
 	Token helper.TokenUseCase
 }
 
+func NewOrderService(repo order_repository.OrderRepositoryInterface, token helper.TokenUseCase) *Order {
+	return &Order{
+		Repo:  repo,
+		Token: token,
+	}
+}
+
 func (service *Order) Order(id int, req buyer_web.Order) (map[string]interface{}, error) {
 	order, errOrder := service.Repo.GetByID(id)
 
@@ -118,7 +125,7 @@ func (service *Order) PayOrder(BuyyerIDFK uint) (*buyer_entity.HistoryEntity, er
 		return order, nil // Order already paid, nothing to update
 	}
 
-	order.PaymentStatus = buyer_entity.HistoryEntity.OrderPaymentStatusPaid
+	order.PaymentStatus = order.OrderPaymentStatusPaid
 	order.Status = 1
 
 	if err := service.Repo.UpdateOrder(order); err != nil {

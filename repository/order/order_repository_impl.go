@@ -12,6 +12,12 @@ type Order struct {
 	DB *gorm.DB
 }
 
+func NewOrderRepository(db *gorm.DB) *Order {
+	return &Order{
+		DB: db,
+	}
+}
+
 func (repo *Order) Order(id int, qty domain.Event) (domain.Event, error) {
 	if err := repo.DB.Where("id = ?", id).Update("qty", gorm.Expr("qty - ?", qty)).Error; err != nil {
 		return domain.Event{}, errors.New("maaf, tiket habis")
