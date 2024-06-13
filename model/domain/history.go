@@ -13,4 +13,10 @@ type History struct {
 	PaidAt        time.Time `gorm:"column:paid_at"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	HistoryItems  []HistoryItem
+	Buyer         Buyers `gorm:"foreignKey:buyer_id"`
+}
+
+func (History) TableName() string {
+	return "history"
 }

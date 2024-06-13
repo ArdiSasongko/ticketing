@@ -86,7 +86,8 @@ func (service *SellerServiceImpl) GetSeller(sellerId int) (seller_entity.SellerE
 	if errGetSeller != nil {
 		return seller_entity.SellerEntity{}, errGetSeller
 	}
-	return seller_entity.ToSellerEntity(getSeller.SellerID, getSeller.Name, getSeller.Email), nil
+
+	return seller_entity.ToSellerEntity(getSeller), nil
 }
 
 func (service *SellerServiceImpl) UpdateSeller(request seller_web.SellerUpdateServiceRequest, pathId int) (map[string]interface{}, error) {

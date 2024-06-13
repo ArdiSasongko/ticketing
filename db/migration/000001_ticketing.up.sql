@@ -84,6 +84,7 @@ CREATE TABLE seller (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    balance NUMERIC(19, 2) NOT NULL,
     created_at TIMESTAMPTZ(6),
     updated_at TIMESTAMPTZ(6)
 );
@@ -120,10 +121,10 @@ CREATE TABLE ticket (
 CREATE TABLE history (
     id SERIAL PRIMARY KEY,
     buyer_id INT NOT NULL,
-    number TIMESTAMPTZ(6) NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    qty INT NOT NULL,
-    price NUMERIC(19,2) NOT NULL,
+    number VARCHAR(255) NOT NULL,
+    payment_status VARCHAR(255) NOT NULL,
+    total NUMERIC(19, 2) NOT NULL,
+    paid_at TIMESTAMPTZ(6),
     created_at TIMESTAMPTZ(6) NOT NULL,
     updated_at TIMESTAMPTZ(6) NOT NULL,
     CONSTRAINT fk_buyer FOREIGN KEY(buyer_id) REFERENCES buyer(id)

@@ -30,16 +30,16 @@ func ToTicketEntity(ticket domain.Ticket) TicketEntity {
 	}
 }
 
-func GenerateTicket(ticket []domain.Ticket) []TicketEntity {
-	ticketData := []TicketEntity{}
-	historyItemData := []HistoryItemEntity{}
-	for _, source := range historyItemData {
-		ticketData = append(ticketData, TicketEntity{
-
-			EventIDFK: source.EventIDFK,
-			Qty:       source.Qty,
-			Price:     source.Subtotal,
-		})
-	}
-	return ticketData
-}
+//func GenerateTicket(ticket []domain.Ticket) []TicketEntity {
+//	ticketData := []TicketEntity{}
+//	historyItemData := []HistoryItemEntity{}
+//	for _, source := range historyItemData {
+//		ticketData = append(ticketData, TicketEntity{
+//
+//			EventIDFK: source.EventIDFK,
+//			Qty:       source.Qty,
+//			Price:     source.Subtotal,
+//		})
+//	}
+//	return ticketData
+//}

@@ -29,6 +29,7 @@ func (eventQueryBuilder *EventQueryBuilderImpl) GetBuilder(filters map[string]st
 	if err != nil {
 		return nil, err
 	}
+	query = query.Preload("Seller")
 
 	return query, nil
 }

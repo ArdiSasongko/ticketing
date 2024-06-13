@@ -7,25 +7,33 @@ import (
 )
 
 type HistoryItemEntity struct {
-	Id          int     `gorm:"column:id"`
-	HistoryIDFK int     `gorm:"column:history_id"`
-	EventIDFK   int     `gorm:"column:event_id"`
-	Price       float64 `gorm:"column:price"`
-	Qty         int     `gorm:"column:qty"`
-	Subtotal    float64 `gorm:"column:subtotal"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	Id        int         `json:"id"`
+	Price     float64     `json:"price"`
+	Qty       int         `json:"qty"`
+	Subtotal  float64     `json:"subtotal"`
+	CreatedAt time.Time   `json:"created_at"`
+	UpdatedAt time.Time   `json:"updated_at"`
+	Event     EventEntity `json:"event"`
 }
 
 func ToHistoryItemEntity(history domain.HistoryItem) HistoryItemEntity {
 	return HistoryItemEntity{
-		Id:          history.Id,
-		HistoryIDFK: history.HistoryIDFK,
-		EventIDFK:   history.EventIDFK,
-		Price:       history.Price,
-		Qty:         history.Qty,
-		Subtotal:    history.Subtotal,
-		CreatedAt:   history.CreatedAt,
-		UpdatedAt:   history.UpdatedAt,
+		Id:        history.Id,
+		Price:     history.Price,
+		Qty:       history.Qty,
+		Subtotal:  history.Subtotal,
+		CreatedAt: history.CreatedAt,
+		UpdatedAt: history.UpdatedAt,
+		Event:     ToEventEntity(history.Event),
 	}
+}
+
+func ToHistoryItemEntityCollection(historyItems []domain.HistoryItem) []HistoryItemEntity {
+	var historyItemList []HistoryItemEntity
+
+	for _, historyItem := range historyItems {
+		historyItemList = append(historyItemList, ToHistoryItemEntity(historyItem))
+	}
+
+	return historyItemList
 }
