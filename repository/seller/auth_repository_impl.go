@@ -33,7 +33,7 @@ func (repo *SellerRepositoryImpl) FindUserByEmail(email string) (*domain.Sellers
 func (repo *SellerRepositoryImpl) GetSeller(Id int) (domain.Sellers, error) {
 	var sellerData domain.Sellers
 
-	err := repo.db.First(&sellerData, "user_id = ?", Id).Error
+	err := repo.db.First(&sellerData, "id = ?", Id).Error
 
 	if err != nil {
 		return domain.Sellers{}, errors.New("user tidak ditemukan")
