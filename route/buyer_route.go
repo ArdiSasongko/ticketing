@@ -20,7 +20,7 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	buyerAuthService := buyer_service.NewBuyerService(buyerAuthRepo, token, historyRepo)
 	buyerAuthController := buyer_controller.NewBuyerController(buyerAuthService)
 	buyerEventQB := buyer_query_builder.NewEventQueryBuilder(db)
-	buyerEventRepo := buyer_repository.NewEventRepository(buyerEventQB)
+	buyerEventRepo := buyer_repository.NewEventRepository(buyerEventQB, db)
 	buyerEventService := buyer_service.NewEventService(buyerEventRepo)
 	buyerEventController := buyer_controller.NewEventController(buyerEventService)
 	buyerOrderRepo := buyer_repository.NewOrderRepository(db)
@@ -40,6 +40,7 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 
 	eventRoute := g.Group("/events", middleware.JWTProtection())
 	eventRoute.GET("", buyerEventController.GetEventList)
+	eventRoute.GET("/:id", buyerEventController.ViewEvent)
 
 	orderRoute := g.Group("/orders", middleware.JWTProtection())
 	orderRoute.GET("", buyerOrderController.ListOrder)

@@ -23,3 +23,12 @@ func (service *EventServiceImpl) GetEventList(filters map[string]string, sort st
 
 	return buyer_entity.ToEventListEntity(events), nil
 }
+
+func (service *EventServiceImpl) ViewEvent(eventId int) (buyer_entity.EventEntity, error) {
+	event, getEventErr := service.repository.GetEvent(eventId)
+	if getEventErr != nil {
+		return buyer_entity.EventEntity{}, getEventErr
+	}
+
+	return buyer_entity.ToEventEntity(event), nil
+}
