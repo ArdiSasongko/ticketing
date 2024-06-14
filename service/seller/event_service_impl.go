@@ -3,9 +3,9 @@ package seller_service
 import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
-	seller_repository "github.com/ArdiSasongko/ticketing_app/repository/seller"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	"github.com/ArdiSasongko/ticketing_app/repository/seller"
 )
 
 type EventServiceImpl struct {
@@ -25,6 +25,15 @@ func (service *EventServiceImpl) GetEventList(sellerId int, filters map[string]s
 	}
 
 	return buyer_entity.ToEventListEntity(events), nil
+}
+
+func (service *EventServiceImpl) ViewEvent(eventId int) (buyer_entity.EventEntity, error) {
+	event, err := service.repository.GetEventByID(eventId)
+	if err != nil {
+		return buyer_entity.EventEntity{}, err
+	}
+
+	return buyer_entity.ToEventEntity(event), nil
 }
 
 func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.CreateEventsRequest) (map[string]interface{}, error) {
@@ -151,4 +160,8 @@ func (service *EventServiceImpl) CheckInTicket(eventID int, ticketID int) error 
 		return err
 	}
 	return nil
+}
+
+func (service *EventServiceImpl) DeleteEvent(eventId int) error {
+	return service.repository.DeleteEventById(eventId)
 }

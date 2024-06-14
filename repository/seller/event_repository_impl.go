@@ -78,3 +78,7 @@ func (repo *EventRepositoryImpl) CheckInTicket(eventID int, ticketID int) error 
 
 	return nil
 }
+
+func (repo *EventRepositoryImpl) DeleteEventById(eventId int) error {
+	return repo.db.Delete(&domain.Event{}, eventId).Error
+}

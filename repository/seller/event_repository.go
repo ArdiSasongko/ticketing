@@ -8,4 +8,5 @@ type EventRepository interface {
 	GetEventByID(id int) (domain.Event, error)
 	UpdateEvent(user domain.Event) (domain.Event, error)
 	CheckInTicket(eventID int, ticketID int) error
+	DeleteEventById(eventId int) error
 }

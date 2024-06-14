@@ -34,6 +34,17 @@ func (controller *EventControllerImpl) GetEventList(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "success", events))
 }
 
+func (controller *EventControllerImpl) ViewEvent(c echo.Context) error {
+	eventId, _ := strconv.Atoi(c.Param("id"))
+
+	event, getEventErr := controller.eventService.ViewEvent(eventId)
+	if getEventErr != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, getEventErr.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "view event success", event))
+}
+
 func (controller *EventControllerImpl) SaveEvents(c echo.Context) error {
 	events := new(seller_web.CreateEventsRequest)
 
@@ -95,4 +106,14 @@ func (controller *EventControllerImpl) CheckInTicket(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Ticket successfully checked in", nil))
+}
+
+func (controller *EventControllerImpl) DeleteEvent(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	if errDeleteEvent := controller.eventService.DeleteEvent(id); errDeleteEvent != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, errDeleteEvent.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Event berhasil dihapus", nil))
 }
