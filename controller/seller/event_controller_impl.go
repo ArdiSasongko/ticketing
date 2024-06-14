@@ -3,8 +3,6 @@ package seller_controller
 import (
 	"net/http"
 	"strconv"
-	"net/http"
-	"strconv"
 
 	"github.com/ArdiSasongko/ticketing_app/model"
 	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
@@ -130,6 +128,17 @@ func (controller *EventControllerImpl) UpdateEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Successfully updated event", updatedEvent))
 }
 
+// CheckInTicket godoc
+// @Summary Check in ticket
+// @Description Check in ticket
+// @Tags seller
+// @Accept json
+// @Produce json
+// @Param event_id path int
+// @Param ticket_id path int
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /seller/events/:event_id/tickets/:ticket_id/check-in [put]
 func (controller *EventControllerImpl) CheckInTicket(c echo.Context) error {
 	eventID, err := strconv.Atoi(c.Param("event_id"))
 	if err != nil {
@@ -149,6 +158,16 @@ func (controller *EventControllerImpl) CheckInTicket(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Ticket successfully checked in", nil))
 }
 
+// DeleteEvent godoc
+// @Summary Delete event
+// @Description Delete event
+// @Tags seller
+// @Accept json
+// @Produce json
+// @Param id path int
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /seller/events/:id [delete]
 func (controller *EventControllerImpl) DeleteEvent(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 

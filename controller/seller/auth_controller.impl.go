@@ -108,6 +108,7 @@ func (controller *SellerControllerImpl) GetSeller(c echo.Context) error {
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /seller/me/update [put]
 func (controller *SellerControllerImpl) UpdateSeller(c echo.Context) error {
+
 	seller := new(seller_web.SellerUpdateServiceRequest)
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*helper.JwtCustomClaims)

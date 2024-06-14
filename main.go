@@ -48,10 +48,8 @@ func main() {
 	r.Validator = &CustomValidator{validator: validator.New()}
 	r.HTTPErrorHandler = helper.BindAndValidate
 
-	// Rute Swagger
 	r.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	// Daftarkan rute
 	route.RegisterBuyerRoutes("/buyer", r)
 	route.RegisterSellerRoutes("/seller", r)
 

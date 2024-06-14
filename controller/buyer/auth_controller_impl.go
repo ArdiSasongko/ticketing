@@ -80,6 +80,16 @@ func (controller *BuyerControllerImpl) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", userLogin))
 }
 
+// ViewMe godoc
+// @Summary View buyer's information
+// @Description View a buyer's information by ID
+// @Tags buyer
+// @Accept json
+// @Produce json
+// @Param id path int true "Buyer ID"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /buyer/me [get]
 func (controller *BuyerControllerImpl) ViewMe(c echo.Context) error {
 	authId, _ := helper.GetAuthId(c)
 
@@ -118,48 +128,6 @@ func (controller *BuyerControllerImpl) Update(c echo.Context) error {
 	}
 
 	result, err := controller.Service.Update(userID, *updateUser)
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
-	}
-
-	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
-}
-
-// GetAll godoc
-// @Summary Get all buyers
-// @Description Get a list of all buyers
-// @Tags buyer
-// @Accept json
-// @Produce json
-// @Success 200 {object} helper.ResponseClientModel
-// @Failure 400 {object} helper.ResponseClientModel
-// @Router /buyer/me/buyers [get]
-func (controller *BuyerControllerImpl) GetAll(c echo.Context) error {
-	result, err := controller.Service.GetAll()
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
-	}
-
-	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
-}
-
-// GetHistory godoc
-// @Summary Get buyer's purchase history
-// @Description Get the purchase history of the logged-in buyer
-// @Tags buyer
-// @Accept json
-// @Produce json
-// @Success 200 {object} helper.ResponseClientModel
-// @Failure 400 {object} helper.ResponseClientModel
-// @Router /buyer/me/history [get]
-func (controller *BuyerControllerImpl) GetHistory(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*helper.JwtCustomClaims)
-	userID, _ := strconv.Atoi(claims.ID)
-
-	result, err := controller.Service.GetHistory(userID)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))

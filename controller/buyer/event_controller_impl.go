@@ -6,7 +6,7 @@ import (
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model"
-	 buyer_service "github.com/ArdiSasongko/ticketing_app/service/buyer"
+	"github.com/ArdiSasongko/ticketing_app/service/buyer"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +19,6 @@ func NewEventController(service buyer_service.EventService) *EventControllerImpl
 		eventService: service,
 	}
 }
-
 
 // GetEventList godoc
 // @Summary Get list of events
@@ -44,6 +43,16 @@ func (controller *EventControllerImpl) GetEventList(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", events))
 }
 
+// ViewEvent godoc
+// @Summary View event
+// @Description View event
+// @Tags buyer
+// @Accept  json
+// @Produce  json
+// @Param id path int
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 500 {object} helper.ResponseClientModel
+// @Router /buyer/events/{id} [get]
 func (controller *EventControllerImpl) ViewEvent(c echo.Context) error {
 	eventId, _ := strconv.Atoi(c.Param("id"))
 
