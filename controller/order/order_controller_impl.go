@@ -1,4 +1,4 @@
-package buyer_controller
+package order_controller
 
 import (
 	"net/http"

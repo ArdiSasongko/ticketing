@@ -13,9 +13,7 @@ type Order struct {
 }
 
 func NewOrderRepository(db *gorm.DB) *Order {
-	return &Order{
-		DB: db,
-	}
+	return &Order{db}
 }
 
 func (repo *Order) Order(id int, qty domain.Event) (domain.Event, error) {

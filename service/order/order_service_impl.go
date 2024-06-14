@@ -1,4 +1,4 @@
-package buyer_service
+package order_service
 
 import (
 	"strconv"
@@ -121,12 +121,11 @@ func (service *Order) PayOrder(BuyyerIDFK uint) (*buyer_entity.HistoryEntity, er
 		return nil, err
 	}
 
-	if order.PaymentStatus == buyer_entity.HistoryEntity.OrderPaymentStatusPaid {
+	if order.PaymentStatus == buyer_entity.OrderPaymentStatusPaid {
 		return order, nil // Order already paid, nothing to update
 	}
 
-	order.PaymentStatus = order.OrderPaymentStatusPaid
-	order.Status = 1
+	order.PaymentStatus = buyer_entity.OrderPaymentStatusPaid
 
 	if err := service.Repo.UpdateOrder(order); err != nil {
 		return nil, err

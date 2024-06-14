@@ -1,4 +1,4 @@
-package buyer_service
+package order_service
 
 import (
 	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
