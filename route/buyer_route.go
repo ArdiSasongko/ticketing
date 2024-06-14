@@ -42,5 +42,6 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	eventRoute := g.Group("/events", middleware.JWTProtection())
 	eventRoute.GET("", buyerEventController.GetEventList)
 
+	orderRoute := g.Group("/orders", middleware.JWTProtection())
 	orderRoute.PUT("/orders/:id/pay", orderController.PayOrder)
 }
