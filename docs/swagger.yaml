@@ -1,0 +1,502 @@
+basePath: /
+definitions:
+  buyer_web.BuyerLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  buyer_web.BuyerRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  buyer_web.BuyerUpdateRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  helper.ResponseClientModel:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  seller_web.CreateEventsRequest:
+    properties:
+      category:
+        type: string
+      date:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      qty:
+        type: integer
+      seller_id:
+        type: integer
+    required:
+    - category
+    - date
+    - location
+    - name
+    - price
+    - qty
+    - seller_id
+    type: object
+  seller_web.SellerLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  seller_web.SellerServiceRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  seller_web.SellerUpdateServiceRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  seller_web.UserUpdateServiceRequest:
+    properties:
+      category:
+        type: string
+      date:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      qty:
+        type: integer
+      seller_id:
+        type: integer
+    required:
+    - category
+    - date
+    - location
+    - name
+    - price
+    - qty
+    - seller_id
+    type: object
+host: localhost:8001
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample Ticketing server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Ticketing API
+  version: "1.0"
+paths:
+  /buyer/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a buyer with email and password
+      parameters:
+      - description: Login details
+        in: body
+        name: buyer
+        required: true
+        schema:
+          $ref: '#/definitions/buyer_web.BuyerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Login a buyer
+      tags:
+      - buyer
+  /buyer/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new buyer with the given details
+      parameters:
+      - description: Buyer details
+        in: body
+        name: buyer
+        required: true
+        schema:
+          $ref: '#/definitions/buyer_web.BuyerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Register a new buyer
+      tags:
+      - buyer
+  /buyer/events:
+    get:
+      consumes:
+      - application/json
+      description: Get list of events with optional filters and sorting
+      parameters:
+      - description: Filters for events
+        in: query
+        name: filters
+        type: string
+      - description: Sort order
+        in: query
+        name: sort
+        type: string
+      - description: Limit number of events
+        in: query
+        name: limit
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Get list of events
+      tags:
+      - buyer
+  /buyer/me/buyers:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all buyers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Get all buyers
+      tags:
+      - buyer
+  /buyer/me/history:
+    get:
+      consumes:
+      - application/json
+      description: Get the purchase history of the logged-in buyer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Get buyer's purchase history
+      tags:
+      - buyer
+  /buyer/me/update:
+    put:
+      consumes:
+      - application/json
+      description: Update a buyer's information by ID
+      parameters:
+      - description: Buyer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated buyer details
+        in: body
+        name: buyer
+        required: true
+        schema:
+          $ref: '#/definitions/buyer_web.BuyerUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Update a buyer's information
+      tags:
+      - buyer
+  /seller/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with the input payload
+      parameters:
+      - description: Login Seller Request
+        in: body
+        name: seller
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.SellerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Login a seller
+      tags:
+      - seller
+  /seller/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new seller with the input payload
+      parameters:
+      - description: Create Seller Request
+        in: body
+        name: seller
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.SellerServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Create a new seller
+      tags:
+      - seller
+  /seller/events:
+    get:
+      consumes:
+      - application/json
+      description: Get list of events based on seller ID with optional filters, sorting,
+        pagination
+      parameters:
+      - description: Seller ID
+        in: query
+        name: seller_id
+        required: true
+        type: integer
+      - description: Filters for events (e.g., name=EventName)
+        in: query
+        name: filters
+        type: string
+      - description: Sort order for events (e.g., +date or -name)
+        in: query
+        name: sort
+        type: string
+      - description: Limit number of events per page
+        in: query
+        name: limit
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Get list of events for a seller
+      tags:
+      - seller
+    post:
+      consumes:
+      - application/json
+      description: Create a new event with the input payload
+      parameters:
+      - description: Create Event Request
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.CreateEventsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Create a new event
+      tags:
+      - seller
+  /seller/events/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an event by its ID
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Event Request
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.UserUpdateServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Update an event
+      tags:
+      - seller
+  /seller/me:
+    get:
+      consumes:
+      - application/json
+      description: Get seller information based on seller ID
+      parameters:
+      - description: Seller ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Get seller information by ID
+      tags:
+      - seller
+  /seller/me/update:
+    put:
+      consumes:
+      - application/json
+      description: Update a seller by its ID
+      parameters:
+      - description: Seller ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Seller Request
+        in: body
+        name: seller
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.SellerUpdateServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Update a seller
+      tags:
+      - seller
+swagger: "2.0"

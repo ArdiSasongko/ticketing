@@ -5,7 +5,7 @@ import (
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model"
-	"github.com/ArdiSasongko/ticketing_app/service/buyer"
+	 buyer_service "github.com/ArdiSasongko/ticketing_app/service/buyer"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,6 +19,20 @@ func NewEventController(service buyer_service.EventService) *EventControllerImpl
 	}
 }
 
+
+// GetEventList godoc
+// @Summary Get list of events
+// @Description Get list of events with optional filters and sorting
+// @Tags buyer
+// @Accept  json
+// @Produce  json
+// @Param filters query string false "Filters for events"
+// @Param sort query string false "Sort order"
+// @Param limit query int false "Limit number of events"
+// @Param page query int false "Page number"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 500 {object} helper.ResponseClientModel
+// @Router /buyer/events [get]
 func (controller *EventControllerImpl) GetEventList(c echo.Context) error {
 	filters, sort, limit, page := helper.ExtractFilterSort(c.QueryParams())
 	events, err := controller.eventService.GetEventList(filters, sort, limit, page)
