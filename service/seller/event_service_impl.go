@@ -3,9 +3,9 @@ package seller_service
 import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
-	"github.com/ArdiSasongko/ticketing_app/repository/seller"
+	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	seller_repository "github.com/ArdiSasongko/ticketing_app/repository/seller"
 )
 
 type EventServiceImpl struct {
@@ -27,7 +27,7 @@ func (service *EventServiceImpl) GetEventList(sellerId int, filters map[string]s
 	return buyer_entity.ToEventListEntity(events), nil
 }
 
-func (service *EventServiceImpl) SaveEvents(request seller_web.CreateEventsRequest) (map[string]interface{}, error) {
+func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.CreateEventsRequest) (map[string]interface{}, error) {
 	date, err := helper.ParseDate(request.Date)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (service *EventServiceImpl) SaveEvents(request seller_web.CreateEventsReque
 	}
 
 	eventReq := domain.Event{
-		SellerID: request.SellerID,
+		SellerID: userID,
 		Name:     request.Name,
 		Date:     date,
 		Location: request.Location,

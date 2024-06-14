@@ -15,7 +15,6 @@ require (
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
-	github.com/jasonlvhit/gocron v0.0.1 // indirect
 	golang.org/x/time v0.5.0 // indirect
 )
 

@@ -60,11 +60,9 @@ func (controller *BuyerControllerImpl) Login(c echo.Context) error {
 }
 
 func (controller *BuyerControllerImpl) Update(c echo.Context) error {
-	userID, err := strconv.Atoi(c.Param("id"))
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
-	}
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*helper.JwtCustomClaims)
+	userID, _ := strconv.Atoi(claims.ID)
 
 	updateUser := new(buyer_web.BuyerUpdateRequest)
 

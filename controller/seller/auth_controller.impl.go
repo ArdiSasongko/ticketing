@@ -1,13 +1,15 @@
 package seller_controller
 
 import (
-	"github.com/ArdiSasongko/ticketing_app/helper"
-	"github.com/ArdiSasongko/ticketing_app/model"
-	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
-	"github.com/ArdiSasongko/ticketing_app/service/seller"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
+
+	"github.com/ArdiSasongko/ticketing_app/helper"
+	"github.com/ArdiSasongko/ticketing_app/model"
+	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	seller_service "github.com/ArdiSasongko/ticketing_app/service/seller"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/labstack/echo/v4"
 )
 
 type SellerControllerImpl struct {
@@ -25,6 +27,10 @@ func (controller *SellerControllerImpl) SaveSeller(c echo.Context) error {
 
 	if err := c.Bind(seller); err != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	if err := c.Validate(seller); err != nil {
+		return err
 	}
 
 	sellerUser, errSaveSeller := controller.sellerService.SaveSeller(*seller)
@@ -63,13 +69,15 @@ func (controller *SellerControllerImpl) GetSeller(c echo.Context) error {
 func (controller *SellerControllerImpl) UpdateSeller(c echo.Context) error {
 
 	seller := new(seller_web.SellerUpdateServiceRequest)
-	id, _ := strconv.Atoi(c.Param("id"))
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*helper.JwtCustomClaims)
+	userID, _ := strconv.Atoi(claims.ID)
 
 	if err := c.Bind(seller); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	sellerUpdate, errSellerUpdate := controller.sellerService.UpdateSeller(*seller, id)
+	sellerUpdate, errSellerUpdate := controller.sellerService.UpdateSeller(*seller, userID)
 
 	if errSellerUpdate != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, errSellerUpdate.Error(), nil))

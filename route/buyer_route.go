@@ -7,7 +7,7 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/middleware"
 	"github.com/ArdiSasongko/ticketing_app/query_builder/buyer"
 	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
-	history_repository "github.com/ArdiSasongko/ticketing_app/repository/history"
+	"github.com/ArdiSasongko/ticketing_app/repository/history"
 	"github.com/ArdiSasongko/ticketing_app/service/buyer"
 	"github.com/labstack/echo/v4"
 )
@@ -35,7 +35,7 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	authRoute.POST("/login", buyerAuthController.Login)
 
 	meRoute := g.Group("/me", middleware.JWTProtection())
-	meRoute.POST("/update", buyerAuthController.Update)
+	meRoute.PUT("/update", buyerAuthController.Update)
 	meRoute.GET("/buyers", buyerAuthController.GetAll)
 	meRoute.GET("/history", buyerAuthController.GetHistory)
 

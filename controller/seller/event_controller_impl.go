@@ -1,10 +1,12 @@
 package seller_controller
 
 import (
-	"github.com/ArdiSasongko/ticketing_app/model"
-	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	"net/http"
 	"strconv"
+
+	"github.com/ArdiSasongko/ticketing_app/model"
+	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/service/seller"
@@ -39,7 +41,11 @@ func (controller *EventControllerImpl) SaveEvents(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	saveEvents, errSaveEvents := controller.eventService.SaveEvents(*events)
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*helper.JwtCustomClaims)
+	userID, _ := strconv.Atoi(claims.ID)
+
+	saveEvents, errSaveEvents := controller.eventService.SaveEvents(userID, *events)
 
 	if errSaveEvents != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, errSaveEvents.Error(), nil))

@@ -2,21 +2,22 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/route"
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"log"
-	"os"
 )
 
 type CustomValidator struct {
 	validator *validator.Validate
 }
 
-func (cv *CustomValidator) Validate(i interface{}) error {
-	return cv.validator.Struct(i)
+func (cV *CustomValidator) Validate(i interface{}) error {
+	return cV.validator.Struct(i)
 }
 
 func main() {

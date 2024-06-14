@@ -2,15 +2,16 @@ package seller_service
 
 import (
 	"errors"
-	"github.com/ArdiSasongko/ticketing_app/helper"
-	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	"github.com/ArdiSasongko/ticketing_app/model/entity/seller"
-	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
-	"github.com/ArdiSasongko/ticketing_app/repository/seller"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"time"
+
+	"github.com/ArdiSasongko/ticketing_app/helper"
+	"github.com/ArdiSasongko/ticketing_app/model/domain"
+	seller_entity "github.com/ArdiSasongko/ticketing_app/model/entity/seller"
+	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	seller_repository "github.com/ArdiSasongko/ticketing_app/repository/seller"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type SellerServiceImpl struct {
@@ -53,12 +54,12 @@ func (service *SellerServiceImpl) SaveSeller(request seller_web.SellerServiceReq
 func (service *SellerServiceImpl) LoginSeller(email string, password string) (map[string]interface{}, error) {
 	seller, err := service.repository.FindUserByEmail(email)
 	if err != nil {
-		return nil, errors.New("Email tidak ditemukan")
+		return nil, errors.New("email tidak ditemukan")
 	}
 
 	errPass := bcrypt.CompareHashAndPassword([]byte(seller.Password), []byte(password))
 	if errPass != nil {
-		return nil, errors.New("Password Salah")
+		return nil, errors.New("password Salah")
 	}
 
 	expiredTime := time.Now().Local().Add(1 * time.Hour)
