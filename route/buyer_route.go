@@ -35,9 +35,8 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	authRoute.POST("/login", buyerAuthController.Login)
 
 	meRoute := g.Group("/me", middleware.JWTProtection())
+	meRoute.GET("", buyerAuthController.ViewMe)
 	meRoute.PUT("/update", buyerAuthController.Update)
-	meRoute.GET("/buyers", buyerAuthController.GetAll)
-	meRoute.GET("/history", buyerAuthController.GetHistory)
 
 	eventRoute := g.Group("/events", middleware.JWTProtection())
 	eventRoute.GET("", buyerEventController.GetEventList)

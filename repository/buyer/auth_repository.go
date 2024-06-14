@@ -7,5 +7,4 @@ type BuyerRepositoryInterface interface {
 	Register(buyer domain.Buyers) (domain.Buyers, error)
 	Update(userID int, buyer domain.Buyers) (domain.Buyers, error)
 	GetByID(userID int) (domain.Buyers, error)
-	GetList() ([]domain.Buyers, error)
 }

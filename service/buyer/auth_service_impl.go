@@ -11,7 +11,6 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
 	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	"github.com/ArdiSasongko/ticketing_app/model/entity/history"
 	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -136,22 +135,11 @@ func (service *BuyerService) Update(userId int, req buyer_web.BuyerUpdateRequest
 	return data, nil
 }
 
-func (service *BuyerService) GetAll() ([]buyer_entity.BuyerEntity, error) {
-	result, err := service.Repo.GetList()
-
+func (service *BuyerService) ViewMe(userId int) (buyer_entity.BuyerEntity, error) {
+	buyer, err := service.Repo.GetByID(userId)
 	if err != nil {
-		return nil, err
+		return buyer_entity.BuyerEntity{}, err
 	}
 
-	return buyer_entity.ToBuyerEntities(result), nil
-}
-
-func (service *BuyerService) GetHistory(userId int) ([]history_entity.HistoryEntity, error) {
-	result, err := service.HistoryRepo.GetHistory(userId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return history_entity.ToHistoryEntities(result), nil
+	return buyer_entity.ToBuyerEntity(buyer), nil
 }

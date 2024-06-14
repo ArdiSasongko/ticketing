@@ -1,14 +1,13 @@
 package buyer_controller
 
 import (
-	"net/http"
-	"strconv"
-
 	"github.com/ArdiSasongko/ticketing_app/helper"
-	buyer_web "github.com/ArdiSasongko/ticketing_app/model/web/buyer"
-	buyer_service "github.com/ArdiSasongko/ticketing_app/service/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
+	"github.com/ArdiSasongko/ticketing_app/service/buyer"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"net/http"
+	"strconv"
 )
 
 type BuyerControllerImpl struct {
@@ -59,6 +58,17 @@ func (controller *BuyerControllerImpl) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", userLogin))
 }
 
+func (controller *BuyerControllerImpl) ViewMe(c echo.Context) error {
+	authId, _ := helper.GetAuthId(c)
+
+	buyer, getBuyerErr := controller.Service.ViewMe(authId)
+	if getBuyerErr != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, getBuyerErr.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "success", buyer))
+}
+
 func (controller *BuyerControllerImpl) Update(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*helper.JwtCustomClaims)
@@ -75,30 +85,6 @@ func (controller *BuyerControllerImpl) Update(c echo.Context) error {
 	}
 
 	result, err := controller.Service.Update(userID, *updateUser)
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
-	}
-
-	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
-}
-
-func (controller *BuyerControllerImpl) GetAll(c echo.Context) error {
-	result, err := controller.Service.GetAll()
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
-	}
-
-	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", result))
-}
-
-func (controller *BuyerControllerImpl) GetHistory(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*helper.JwtCustomClaims)
-	userID, _ := strconv.Atoi(claims.ID)
-
-	result, err := controller.Service.GetHistory(userID)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))

@@ -6,6 +6,5 @@ type BuyerController interface {
 	Register(c echo.Context) error
 	Login(c echo.Context) error
 	Update(c echo.Context) error
-	GetAll(c echo.Context) error
-	GetHistory(c echo.Context) error
+	ViewMe(c echo.Context) error
 }
