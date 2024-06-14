@@ -114,6 +114,7 @@ CREATE TABLE ticket (
     price NUMERIC(19, 2) NOT NULL,
     created_at TIMESTAMPTZ(6) NOT NULL,
     updated_at TIMESTAMPTZ(6) NOT NULL,
+    status VARCHAR(50) DEFAULT 'Valid' CHECK (status IN ('Valid', 'Used', 'Expired')),
     CONSTRAINT fk_event FOREIGN KEY(event_id) REFERENCES event(id),
     CONSTRAINT fk_buyer FOREIGN KEY(buyer_id) REFERENCES buyer(id)
 );

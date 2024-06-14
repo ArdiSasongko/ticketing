@@ -11,4 +11,5 @@ type EventService interface {
 	SaveEvents(request seller_web.CreateEventsRequest) (map[string]interface{}, error)
 	GetEventByID(id int) (domain.Event, error)
 	UpdateEvent(request seller_web.UserUpdateServiceRequest, pathId int) (map[string]interface{}, error)
+	CheckInTicket(eventID int, ticketID int) error
 }

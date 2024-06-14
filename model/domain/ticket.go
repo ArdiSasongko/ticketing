@@ -12,6 +12,11 @@ type Ticket struct {
 	Location  string    `gorm:"column:location"`
 	Qty       int       `gorm:"column:qty"`
 	Price     float64   `gorm:"column:price"`
+	Status    string    `gorm:"column:status;default:'Valid';check:status IN ('Valid', 'Used', 'Expired')"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (Ticket) TableName() string {
+	return "ticket"
 }
