@@ -34,21 +34,21 @@ func (service *EventServiceImpl) SaveEvents(request seller_web.CreateEventsReque
 	}
 
 	if err := helper.ValidateName(request.Name); err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
 	if err := helper.ValidateCategory(request.Category); err != nil {
-        return nil, err
-    }
-	if err := helper.ValidateLocation(request.Location);err != nil {
-        return nil, err
-    }
-	if err := helper.ValidateQty(request.Qty);err != nil {
-        return nil, err
-    }
-	if err := helper.ValidatePrice(request.Price);err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
+	if err := helper.ValidateLocation(request.Location); err != nil {
+		return nil, err
+	}
+	if err := helper.ValidateQty(request.Qty); err != nil {
+		return nil, err
+	}
+	if err := helper.ValidatePrice(request.Price); err != nil {
+		return nil, err
+	}
 
 	eventReq := domain.Event{
 		SellerID: request.SellerID,
@@ -143,4 +143,12 @@ func (service *EventServiceImpl) UpdateEvent(request seller_web.UserUpdateServic
 
 func (service *EventServiceImpl) GetEventByID(eventID int) (domain.Event, error) {
 	return service.repository.GetEventByID(eventID)
+}
+
+func (service *EventServiceImpl) CheckInTicket(eventID int, ticketID int) error {
+	err := service.repository.CheckInTicket(eventID, ticketID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

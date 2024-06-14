@@ -1,6 +1,7 @@
 package seller_repository
 
 import (
+	"errors"
 	"github.com/ArdiSasongko/ticketing_app/app"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
 	"github.com/ArdiSasongko/ticketing_app/query_builder/seller"
@@ -57,4 +58,23 @@ func (repo *EventRepositoryImpl) UpdateEvent(event domain.Event) (domain.Event, 
 	}
 
 	return event, nil
+}
+
+func (repo *EventRepositoryImpl) CheckInTicket(eventID int, ticketID int) error {
+
+	var ticket domain.Ticket
+	if err := repo.db.Where("id = ?", ticketID).First(&ticket).Error; err != nil {
+		return err
+	}
+
+	if ticket.Status == "Used" {
+		return errors.New("Ticket has already been checked in")
+	}
+
+	ticket.Status = "Used"
+	if err := repo.db.Save(&ticket).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

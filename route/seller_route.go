@@ -36,4 +36,6 @@ func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	eventRoute.GET("", sellerEventController.GetEventList)
 	eventRoute.POST("", sellerEventController.SaveEvents)
 	eventRoute.POST(":id", sellerEventController.UpdateEvent, middleware.AccessUserID(*sellerEventRepo))
+	eventRoute.PUT("/:event_id/tickets/:ticket_id/check-in", sellerEventController.CheckInTicket)
+
 }
