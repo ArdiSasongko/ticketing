@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"github.com/joho/godotenv"
 )
 
 func DBConnection() *gorm.DB {
@@ -28,4 +29,12 @@ func DBConnection() *gorm.DB {
 
 	return db
 
+}
+
+func init() {
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }

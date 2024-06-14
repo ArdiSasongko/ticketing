@@ -3,6 +3,8 @@ package seller_controller
 import (
 	"net/http"
 	"strconv"
+	"net/http"
+	"strconv"
 
 	"github.com/ArdiSasongko/ticketing_app/model"
 	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
@@ -23,17 +25,46 @@ func NewEventController(service seller_service.EventService) *EventControllerImp
 	}
 }
 
+// GetEventList godoc
+// @Summary Get list of events for a seller
+// @Description Get list of events based on seller ID with optional filters, sorting, pagination
+// @Tags seller
+// @Accept json
+// @Produce json
+// @Param seller_id query int true "Seller ID"
+// @Param filters query string false "Filters for events (e.g., name=EventName)"
+// @Param sort query string false "Sort order for events (e.g., +date or -name)"
+// @Param limit query int false "Limit number of events per page"
+// @Param page query int false "Page number"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /seller/events [get]
 func (controller *EventControllerImpl) GetEventList(c echo.Context) error {
+	// Extract filters, sort, limit, and page from query parameters
 	filters, sort, limit, page := helper.ExtractFilterSort(c.QueryParams())
-	sellerId := 1 // TODO: auth
+
+	// TODO: Implement seller authentication to get the seller ID dynamically
+	sellerId := 1 // For demonstration, replace this with your seller authentication logic
+
+	// Call the service to fetch the list of events
 	events, err := controller.eventService.GetEventList(sellerId, filters, sort, limit, page)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseClient(http.StatusInternalServerError, err.Error(), nil))
 	}
-
+	// Return JSON response with the list of events
 	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "success", events))
 }
 
+// SaveEvents godoc
+// @Summary Create a new event
+// @Description Create a new event with the input payload
+// @Tags seller
+// @Accept json
+// @Produce json
+// @Param event body seller_web.CreateEventsRequest true "Create Event Request"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /seller/events [post]
 func (controller *EventControllerImpl) ViewEvent(c echo.Context) error {
 	eventId, _ := strconv.Atoi(c.Param("id"))
 
@@ -65,7 +96,17 @@ func (controller *EventControllerImpl) SaveEvents(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Successfully created event", saveEvents))
 }
 
-// update
+// UpdateEvent godoc
+// @Summary Update an event
+// @Description Update an event by its ID
+// @Tags seller
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Param event body seller_web.UserUpdateServiceRequest true "Update Event Request"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /seller/events/{id} [put]
 func (controller *EventControllerImpl) UpdateEvent(c echo.Context) error {
 	// Mengambil ID acara dari parameter rute
 	eventID, err := strconv.Atoi(c.Param("id"))

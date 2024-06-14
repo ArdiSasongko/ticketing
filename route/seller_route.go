@@ -11,6 +11,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// RegisterSellerRoutes mendaftarkan rute-rute untuk seller
+// @Summary Register Seller Routes
+// @Description Register all the seller related routes
+// @Tags seller
+
 func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	db := app.DBConnection()
 	token := helper.NewTokenUseCase()
