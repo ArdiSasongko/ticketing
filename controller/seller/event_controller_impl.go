@@ -128,6 +128,39 @@ func (controller *EventControllerImpl) UpdateEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Successfully updated event", updatedEvent))
 }
 
+// UpdateEventStatus godoc
+// @Summary Update event status
+// @Description Update event status
+// @Tags seller
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Param event body seller_web.UpdateEventStatusRequest true "Update Event Request"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /seller/events/{id}/status [patch]
+func (controller *EventControllerImpl) UpdateEventStatus(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, "Invalid event ID", nil))
+	}
+
+	request := new(seller_web.UpdateEventStatusRequest)
+	if err := c.Bind(request); err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+	if err := c.Validate(request); err != nil {
+		return err
+	}
+
+	event, err := controller.eventService.UpdateEventStatus(*request, id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Successfully updated event", event))
+}
+
 // CheckInTicket godoc
 // @Summary Check in ticket
 // @Description Check in ticket

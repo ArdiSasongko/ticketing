@@ -1,9 +1,12 @@
 package seller_service
 
 import (
+	"errors"
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
 	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/seller"
+	"github.com/ArdiSasongko/ticketing_app/model/enum"
 	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 	"github.com/ArdiSasongko/ticketing_app/repository/seller"
 )
@@ -67,10 +70,10 @@ func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.Creat
 		Qty:      request.Qty,
 		Category: request.Category,
 		Price:    request.Price,
+		Status:   enum.EventStatusInactive,
 	}
 
 	saveEvent, errSaveEvent := service.repository.CreateEvent(eventReq)
-
 	if errSaveEvent != nil {
 		return nil, errSaveEvent
 	}
@@ -83,6 +86,7 @@ func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.Creat
 		"qty":       saveEvent.Qty,
 		"category":  saveEvent.Category,
 		"price":     saveEvent.Price,
+		"status":    saveEvent.Status,
 	}, nil
 }
 
@@ -148,6 +152,25 @@ func (service *EventServiceImpl) UpdateEvent(request seller_web.UserUpdateServic
 		"category":  updatedEvent.Category,
 		"price":     updatedEvent.Price,
 	}, nil
+}
+
+func (service *EventServiceImpl) UpdateEventStatus(request seller_web.UpdateEventStatusRequest, id int) (seller_entity.EventEntity, error) {
+	event, getEventErr := service.repository.GetEventByID(id)
+	if getEventErr != nil {
+		return seller_entity.EventEntity{}, getEventErr
+	}
+
+	if event.Status == enum.EventStatusClosed {
+		return seller_entity.EventEntity{}, errors.New("cannot update closed event")
+	}
+
+	event.Status = request.Status
+	event, updateEventErr := service.repository.UpdateEvent(event)
+	if updateEventErr != nil {
+		return seller_entity.EventEntity{}, updateEventErr
+	}
+
+	return seller_entity.ToEventEntity(event), nil
 }
 
 func (service *EventServiceImpl) GetEventByID(eventID int) (domain.Event, error) {

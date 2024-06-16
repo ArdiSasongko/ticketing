@@ -3,6 +3,7 @@ package seller_service
 import (
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
 	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/seller"
 	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
 )
 
@@ -13,5 +14,6 @@ type EventService interface {
 	GetEventByID(id int) (domain.Event, error)
 	DeleteEvent(eventId int) error
 	UpdateEvent(request seller_web.UserUpdateServiceRequest, pathId int) (map[string]interface{}, error)
+	UpdateEventStatus(request seller_web.UpdateEventStatusRequest, id int) (seller_entity.EventEntity, error)
 	CheckInTicket(eventID int, ticketID int) error
 }

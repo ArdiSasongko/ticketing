@@ -53,7 +53,7 @@ func (service *OrderServiceImpl) ViewOrder(historyId int) (buyer_entity.HistoryE
 }
 
 func (service *OrderServiceImpl) CreateOrder(request buyer_web.OrderRequest, buyerId int) (buyer_entity.HistoryEntity, error) {
-	number, generateOrderNumberErr := service.generateOrderNumber()
+	number, generateOrderNumberErr := service.generateOrderNumber(buyerId)
 	if generateOrderNumberErr != nil {
 		return buyer_entity.HistoryEntity{}, generateOrderNumberErr
 	}
@@ -71,6 +71,10 @@ func (service *OrderServiceImpl) CreateOrder(request buyer_web.OrderRequest, buy
 	event, getEventErr := service.orderRepo.GetEvent(request.EventID)
 	if getEventErr != nil {
 		return buyer_entity.HistoryEntity{}, getEventErr
+	}
+
+	if event.Status != enum.EventStatusActive {
+		return buyer_entity.HistoryEntity{}, errors.New("event is not active")
 	}
 	if event.Qty < request.Qty {
 		return buyer_entity.HistoryEntity{}, errors.New("not enough ticket")
@@ -123,7 +127,7 @@ func (service *OrderServiceImpl) DeleteActiveOrder(buyerId int) error {
 	return nil
 }
 
-func (service *OrderServiceImpl) generateOrderNumber() (string, error) {
+func (service *OrderServiceImpl) generateOrderNumber(buyerId int) (string, error) {
 	yearInt, monthInt, dayInt := time.Now().Date()
 	year := strconv.Itoa(yearInt)
 	month := strconv.Itoa(int(monthInt))
@@ -134,7 +138,7 @@ func (service *OrderServiceImpl) generateOrderNumber() (string, error) {
 	if len(day) == 1 {
 		day = fmt.Sprintf("0%s", day)
 	}
-	latestOrder, err := service.orderRepo.GetLatestOrder()
+	latestOrder, err := service.orderRepo.GetLatestOrder(buyerId)
 	if err != nil {
 		return "", err
 	}

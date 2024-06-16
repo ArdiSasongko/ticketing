@@ -14,7 +14,7 @@ type OrderRepository interface {
 	CreateHistoryItem(history domain.HistoryItem) (domain.HistoryItem, error)
 	GetEvent(id int) (domain.Event, error)
 	UpdateEvent(event domain.Event) (domain.Event, error)
-	GetLatestOrder() (domain.History, error)
+	GetLatestOrder(buyerId int) (domain.History, error)
 	GetHistory(historyId int) (domain.History, error)
 	GetActiveHistory(buyerId int) (domain.History, error)
 	DeleteHistory(history domain.History) error

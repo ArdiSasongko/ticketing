@@ -23,6 +23,9 @@ func BindAndValidate(err error, c echo.Context) {
 			case "email":
 				report.Message = fmt.Sprintf("%s ini bukan email valid", err.Field())
 				report.Code = http.StatusBadRequest
+			case "event_status_enum":
+				report.Message = fmt.Sprintf("%s tidak valid", err.Field())
+				report.Code = http.StatusBadRequest
 			}
 		}
 	}

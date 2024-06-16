@@ -7,6 +7,7 @@ type UserController interface {
 	ViewEvent(c echo.Context) error
 	SaveEvents(c echo.Context) error
 	UpdateEvent(c echo.Context) error
+	UpdateEventStatus(c echo.Context) error
 	CheckInTicket(c echo.Context) error
 	DeleteEvent(c echo.Context) error
 }

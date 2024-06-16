@@ -69,12 +69,12 @@ func (repo *OrderRepositoryImpl) UpdateEvent(event domain.Event) (domain.Event, 
 	return event, nil
 }
 
-func (repo *OrderRepositoryImpl) GetLatestOrder() (domain.History, error) {
+func (repo *OrderRepositoryImpl) GetLatestOrder(buyerId int) (domain.History, error) {
 	var latestOrder domain.History
 
 	today := time.Now().Truncate(24 * time.Hour)
 	tomorrow := today.Add(24 * time.Hour)
-	err := repo.DB.Where("created_at >= ?", today).Where("created_at < ?", tomorrow).Order("created_at DESC").First(&latestOrder).Error
+	err := repo.DB.First(&latestOrder).Where("created_at >= ?", today).Where("created_at < ?", tomorrow).Where("buyer_id = ?", buyerId).Order("created_at DESC").Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.History{}, nil

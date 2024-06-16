@@ -53,7 +53,7 @@ func (controller *OrderControllerImpl) CreateOrder(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 	if err := c.Validate(input); err != nil {
-		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+		return err
 	}
 
 	tx := app.DBConnection().Begin()
@@ -67,7 +67,7 @@ func (controller *OrderControllerImpl) CreateOrder(c echo.Context) error {
 	data, createOrderErr := orderService.CreateOrder(*input, authId)
 	if createOrderErr != nil {
 		tx.Rollback()
-		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, createOrderErr.Error(), nil))
 	}
 
 	tx.Commit()

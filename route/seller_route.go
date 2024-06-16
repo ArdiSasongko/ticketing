@@ -42,6 +42,7 @@ func RegisterSellerRoutes(prefix string, e *echo.Echo) {
 	eventRoute.GET("/:id", sellerEventController.ViewEvent, middleware.AccessUserID(*sellerEventRepo))
 	eventRoute.POST("", sellerEventController.SaveEvents)
 	eventRoute.PUT("/:id", sellerEventController.UpdateEvent, middleware.AccessUserID(*sellerEventRepo))
+	eventRoute.PUT("/:id/update-status", sellerEventController.UpdateEventStatus, middleware.AccessUserID(*sellerEventRepo))
 	eventRoute.PUT("/:event_id/tickets/:ticket_id/check-in", sellerEventController.CheckInTicket)
 	eventRoute.DELETE("/:id", sellerEventController.DeleteEvent, middleware.AccessUserID(*sellerEventRepo))
 }

@@ -15,6 +15,7 @@ type EventEntity struct {
 	Qty       int                        `json:"qty"`
 	Category  string                     `json:"category"`
 	Price     float64                    `json:"price"`
+	Status    string                     `json:"status"`
 	CreatedAt time.Time                  `json:"created_at"`
 	UpdatedAt time.Time                  `json:"updated_at"`
 	Seller    seller_entity.SellerEntity `json:"seller"`
@@ -29,6 +30,7 @@ func ToEventEntity(event domain.Event) EventEntity {
 		Qty:       event.Qty,
 		Category:  event.Category,
 		Price:     event.Price,
+		Status:    event.Status,
 		CreatedAt: event.CreatedAt,
 		UpdatedAt: event.UpdatedAt,
 		Seller:    seller_entity.ToSellerEntity(event.Seller),
