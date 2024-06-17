@@ -50,6 +50,7 @@ func main() {
 
 	r.GET("/swagger/*", echoSwagger.WrapHandler)
 
+	route.RegisterAdminRoute("/admin", r)
 	route.RegisterBuyerRoutes("/buyer", r)
 	route.RegisterSellerRoutes("/seller", r)
 
