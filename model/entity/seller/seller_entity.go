@@ -15,3 +15,11 @@ func ToSellerEntity(seller domain.Sellers) SellerEntity {
 		Email:    seller.Email,
 	}
 }
+
+func ToSellerrEntities(sellers []domain.Sellers) []SellerEntity {
+	var result []SellerEntity
+	for _, seller := range sellers {
+		result = append(result, ToSellerEntity(seller))
+	}
+	return result
+}
