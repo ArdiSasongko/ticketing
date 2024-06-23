@@ -2,87 +2,79 @@ package seller_service
 
 import (
 	"errors"
-	"strconv"
-	"time"
-
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
-	seller_entity "github.com/ArdiSasongko/ticketing_app/model/entity/seller"
-	seller_web "github.com/ArdiSasongko/ticketing_app/model/web/seller"
-	seller_repository "github.com/ArdiSasongko/ticketing_app/repository/seller"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/seller"
+	"github.com/ArdiSasongko/ticketing_app/model/enum"
+	"github.com/ArdiSasongko/ticketing_app/model/web/seller"
+	"github.com/ArdiSasongko/ticketing_app/repository/seller"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type SellerServiceImpl struct {
-	repository   seller_repository.SellerRepository
-	tokenUseCase helper.TokenUseCase
+type AuthServiceImpl struct {
+	authRepository seller_repository.AuthRepository
+	tokenUseCase   helper.TokenUseCase
 }
 
-func NewSellerService(repository seller_repository.SellerRepository, token helper.TokenUseCase) *SellerServiceImpl {
-	return &SellerServiceImpl{
-		repository:   repository,
-		tokenUseCase: token,
+func NewAuthService(
+	authRepository seller_repository.AuthRepository,
+	tokenUseCase helper.TokenUseCase,
+) *AuthServiceImpl {
+	return &AuthServiceImpl{
+		authRepository: authRepository,
+		tokenUseCase:   tokenUseCase,
 	}
 }
 
-func (service *SellerServiceImpl) SaveSeller(request seller_web.SellerServiceRequest) (map[string]interface{}, error) {
+func (service *AuthServiceImpl) SaveSeller(request seller_web.RegisterSellerRequest) (map[string]interface{}, error) {
 	passHash, errHash := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.MinCost)
 	if errHash != nil {
 		return nil, errHash
 	}
 
 	request.Password = string(passHash)
-	newseller := domain.Sellers{
+	newSeller := domain.Sellers{
 		Name:     request.Name,
 		Password: request.Password,
 		Email:    request.Email,
 	}
 
-	saveSeller, errSaveSeller := service.repository.SaveSeller(newseller)
+	saveSeller, errSaveSeller := service.authRepository.SaveSeller(newSeller)
 	if errSaveSeller != nil {
 		return nil, errSaveSeller
 	}
 
 	data := helper.ResponseToJson{
+		"id":    saveSeller.SellerID,
 		"name ": saveSeller.Name,
 		"email": saveSeller.Email,
 	}
 	return data, nil
 }
 
-func (service *SellerServiceImpl) LoginSeller(email string, password string) (map[string]interface{}, error) {
-	seller, err := service.repository.FindUserByEmail(email)
-	if err != nil {
-		return nil, errors.New("email tidak ditemukan")
+func (service *AuthServiceImpl) LoginSeller(email string, password string) (map[string]interface{}, error) {
+	seller, getSellerErr := service.authRepository.FindUserByEmail(email)
+	if getSellerErr != nil {
+		return nil, errors.New("wrong email or password")
 	}
 
-	errPass := bcrypt.CompareHashAndPassword([]byte(seller.Password), []byte(password))
-	if errPass != nil {
-		return nil, errors.New("password Salah")
+	if checkPasswordErr := bcrypt.CompareHashAndPassword([]byte(seller.Password), []byte(password)); checkPasswordErr != nil {
+		return nil, errors.New("wrong email or password")
 	}
 
-	expiredTime := time.Now().Local().Add(1 * time.Hour)
-
-	claims := helper.JwtCustomClaims{
-		ID:    strconv.Itoa(seller.SellerID),
-		Name:  seller.Name,
-		Email: seller.Email,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "rest-gorm",
-			ExpiresAt: jwt.NewNumericDate(expiredTime),
-		},
-	}
-	token, errToken := service.tokenUseCase.GenerateAccessToken(claims)
-	if errToken != nil {
-		return nil, errors.New("ada kesalahan generate token")
+	loginResponse, loginErr := helper.Login(enum.UserTypeSeller, seller.SellerID, seller.Email)
+	if loginErr != nil {
+		return nil, loginErr
 	}
 
-	return map[string]interface{}{"token": token}, nil
+	return helper.CustomResponse{
+		"token":      loginResponse["token"],
+		"expires_at": loginResponse["expires_at"],
+	}, nil
 }
 
-func (service *SellerServiceImpl) GetSeller(sellerId int) (seller_entity.SellerEntity, error) {
-	getSeller, errGetSeller := service.repository.GetSeller(sellerId)
+func (service *AuthServiceImpl) GetSeller(sellerId int) (seller_entity.SellerEntity, error) {
+	getSeller, errGetSeller := service.authRepository.GetSeller(sellerId)
 
 	if errGetSeller != nil {
 		return seller_entity.SellerEntity{}, errGetSeller
@@ -91,8 +83,8 @@ func (service *SellerServiceImpl) GetSeller(sellerId int) (seller_entity.SellerE
 	return seller_entity.ToSellerEntity(getSeller), nil
 }
 
-func (service *SellerServiceImpl) UpdateSeller(request seller_web.SellerUpdateServiceRequest, pathId int) (map[string]interface{}, error) {
-	getSellerById, err := service.repository.GetSeller(pathId)
+func (service *AuthServiceImpl) UpdateSeller(request seller_web.UpdateSellerRequest, pathId int) (map[string]interface{}, error) {
+	getSellerById, err := service.authRepository.GetSeller(pathId)
 	if err != nil {
 		return nil, err
 	}
@@ -109,14 +101,17 @@ func (service *SellerServiceImpl) UpdateSeller(request seller_web.SellerUpdateSe
 		SellerID: pathId,
 		Name:     request.Name,
 		Email:    request.Email,
-		Password: getSellerById.Password,
 	}
 
-	sellerRequest, errUpdate := service.repository.UpdateSeller(sellerRequest)
+	sellerRequest, errUpdate := service.authRepository.UpdateSeller(sellerRequest)
 
 	if errUpdate != nil {
 		return nil, errUpdate
 	}
 
-	return helper.CustomResponse{"name": sellerRequest.Name, "email": sellerRequest.Email}, nil
+	return helper.CustomResponse{
+		"id":    sellerRequest.SellerID,
+		"name":  sellerRequest.Name,
+		"email": sellerRequest.Email,
+	}, nil
 }

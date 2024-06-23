@@ -10,10 +10,10 @@ import (
 type EventService interface {
 	GetEventList(sellerId int, filters map[string]string, sort string, limit int, page int) ([]buyer_entity.EventEntity, error)
 	ViewEvent(eventId int) (buyer_entity.EventEntity, error)
-	SaveEvents(userID int, request seller_web.CreateEventsRequest) (map[string]interface{}, error)
+	SaveEvents(userID int, request seller_web.CreateEventRequest) (seller_entity.EventEntity, error)
 	GetEventByID(id int) (domain.Event, error)
 	DeleteEvent(eventId int) error
-	UpdateEvent(request seller_web.UserUpdateServiceRequest, pathId int) (map[string]interface{}, error)
+	UpdateEvent(request seller_web.UpdateEventRequest, pathId int) (seller_entity.EventEntity, error)
 	UpdateEventStatus(request seller_web.UpdateEventStatusRequest, id int) (seller_entity.EventEntity, error)
 	CheckInTicket(eventID int, ticketID int) error
 }

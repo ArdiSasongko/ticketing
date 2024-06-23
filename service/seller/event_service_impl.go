@@ -12,17 +12,17 @@ import (
 )
 
 type EventServiceImpl struct {
-	repository seller_repository.EventRepository
+	eventRepository seller_repository.EventRepository
 }
 
-func NewEventService(repository seller_repository.EventRepository) *EventServiceImpl {
+func NewEventService(eventRepository seller_repository.EventRepository) *EventServiceImpl {
 	return &EventServiceImpl{
-		repository: repository,
+		eventRepository: eventRepository,
 	}
 }
 
 func (service *EventServiceImpl) GetEventList(sellerId int, filters map[string]string, sort string, limit int, page int) ([]buyer_entity.EventEntity, error) { // todo
-	events, err := service.repository.ListEvents(sellerId, filters, sort, limit, page)
+	events, err := service.eventRepository.ListEvents(sellerId, filters, sort, limit, page)
 	if err != nil {
 		return []buyer_entity.EventEntity{}, err
 	}
@@ -31,7 +31,7 @@ func (service *EventServiceImpl) GetEventList(sellerId int, filters map[string]s
 }
 
 func (service *EventServiceImpl) ViewEvent(eventId int) (buyer_entity.EventEntity, error) {
-	event, err := service.repository.GetEventByID(eventId)
+	event, err := service.eventRepository.GetEventByID(eventId)
 	if err != nil {
 		return buyer_entity.EventEntity{}, err
 	}
@@ -39,27 +39,26 @@ func (service *EventServiceImpl) ViewEvent(eventId int) (buyer_entity.EventEntit
 	return buyer_entity.ToEventEntity(event), nil
 }
 
-func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.CreateEventsRequest) (map[string]interface{}, error) {
+func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.CreateEventRequest) (seller_entity.EventEntity, error) {
 	date, err := helper.ParseDate(request.Date)
 	if err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 
 	if err := helper.ValidateName(request.Name); err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
-
 	if err := helper.ValidateCategory(request.Category); err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 	if err := helper.ValidateLocation(request.Location); err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 	if err := helper.ValidateQty(request.Qty); err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 	if err := helper.ValidatePrice(request.Price); err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 
 	eventReq := domain.Event{
@@ -70,31 +69,27 @@ func (service *EventServiceImpl) SaveEvents(userID int, request seller_web.Creat
 		Qty:      request.Qty,
 		Category: request.Category,
 		Price:    request.Price,
-		Status:   enum.EventStatusInactive,
+		Status:   string(enum.EventStatusInactive),
 	}
 
-	saveEvent, errSaveEvent := service.repository.CreateEvent(eventReq)
+	saveEvent, errSaveEvent := service.eventRepository.CreateEvent(eventReq)
 	if errSaveEvent != nil {
-		return nil, errSaveEvent
+		return seller_entity.EventEntity{}, errSaveEvent
 	}
 
-	return map[string]interface{}{
-		"seller_id": saveEvent.SellerID,
-		"name":      saveEvent.Name,
-		"date":      saveEvent.Date,
-		"location":  saveEvent.Location,
-		"qty":       saveEvent.Qty,
-		"category":  saveEvent.Category,
-		"price":     saveEvent.Price,
-		"status":    saveEvent.Status,
-	}, nil
+	saveEvent, err = service.eventRepository.GetEventByID(saveEvent.EventID)
+	if err != nil {
+		return seller_entity.EventEntity{}, err
+	}
+
+	return seller_entity.ToEventEntity(saveEvent), nil
 }
 
-func (service *EventServiceImpl) UpdateEvent(request seller_web.UserUpdateServiceRequest, eventID int) (map[string]interface{}, error) {
+func (service *EventServiceImpl) UpdateEvent(request seller_web.UpdateEventRequest, eventID int) (seller_entity.EventEntity, error) {
 	// Mengambil data acara yang akan diperbarui berdasarkan ID
-	existingEvent, err := service.repository.GetEventByID(eventID)
+	existingEvent, err := service.eventRepository.GetEventByID(eventID)
 	if err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 
 	// Memeriksa setiap bidang dalam permintaan pembaruan.
@@ -121,11 +116,11 @@ func (service *EventServiceImpl) UpdateEvent(request seller_web.UserUpdateServic
 	// Membuat objek domain.Event baru berdasarkan data yang diperbarui
 	date, err := helper.ParseDate(request.Date)
 	if err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
 	}
 
 	updatedEvent := domain.Event{
-		ID:       existingEvent.ID,
+		EventID:  existingEvent.EventID,
 		SellerID: existingEvent.SellerID,
 		Name:     request.Name,
 		Date:     date,
@@ -136,36 +131,32 @@ func (service *EventServiceImpl) UpdateEvent(request seller_web.UserUpdateServic
 	}
 
 	// Memanggil repository untuk melakukan pembaruan acara
-	updatedEvent, err = service.repository.UpdateEvent(updatedEvent)
+	updatedEvent, err = service.eventRepository.UpdateEvent(updatedEvent)
 	if err != nil {
-		return nil, err
+		return seller_entity.EventEntity{}, err
+	}
+
+	updatedEvent, err = service.eventRepository.GetEventByID(updatedEvent.EventID)
+	if err != nil {
+		return seller_entity.EventEntity{}, err
 	}
 
 	// Mengembalikan respons dengan data acara yang diperbarui dalam bentuk map
-	return map[string]interface{}{
-		"id":        updatedEvent.ID,
-		"seller_id": updatedEvent.SellerID,
-		"name":      updatedEvent.Name,
-		"date":      updatedEvent.Date,
-		"location":  updatedEvent.Location,
-		"qty":       updatedEvent.Qty,
-		"category":  updatedEvent.Category,
-		"price":     updatedEvent.Price,
-	}, nil
+	return seller_entity.ToEventEntity(updatedEvent), nil
 }
 
 func (service *EventServiceImpl) UpdateEventStatus(request seller_web.UpdateEventStatusRequest, id int) (seller_entity.EventEntity, error) {
-	event, getEventErr := service.repository.GetEventByID(id)
+	event, getEventErr := service.eventRepository.GetEventByID(id)
 	if getEventErr != nil {
 		return seller_entity.EventEntity{}, getEventErr
 	}
 
-	if event.Status == enum.EventStatusClosed {
+	if event.Status == string(enum.EventStatusClosed) {
 		return seller_entity.EventEntity{}, errors.New("cannot update closed event")
 	}
 
 	event.Status = request.Status
-	event, updateEventErr := service.repository.UpdateEvent(event)
+	event, updateEventErr := service.eventRepository.UpdateEvent(event)
 	if updateEventErr != nil {
 		return seller_entity.EventEntity{}, updateEventErr
 	}
@@ -174,11 +165,11 @@ func (service *EventServiceImpl) UpdateEventStatus(request seller_web.UpdateEven
 }
 
 func (service *EventServiceImpl) GetEventByID(eventID int) (domain.Event, error) {
-	return service.repository.GetEventByID(eventID)
+	return service.eventRepository.GetEventByID(eventID)
 }
 
 func (service *EventServiceImpl) CheckInTicket(eventID int, ticketID int) error {
-	err := service.repository.CheckInTicket(eventID, ticketID)
+	err := service.eventRepository.CheckInTicket(eventID, ticketID)
 	if err != nil {
 		return err
 	}
@@ -186,5 +177,5 @@ func (service *EventServiceImpl) CheckInTicket(eventID int, ticketID int) error 
 }
 
 func (service *EventServiceImpl) DeleteEvent(eventId int) error {
-	return service.repository.DeleteEventById(eventId)
+	return service.eventRepository.DeleteEventById(eventId)
 }

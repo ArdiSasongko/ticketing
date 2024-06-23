@@ -2,101 +2,79 @@ package buyer_service
 
 import (
 	"errors"
-	"strconv"
-	"time"
-
-	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
-	"github.com/ArdiSasongko/ticketing_app/repository/history"
-
 	"github.com/ArdiSasongko/ticketing_app/helper"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
 	"github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
+	"github.com/ArdiSasongko/ticketing_app/model/enum"
 	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type BuyerService struct {
-	Repo        buyer_repository.BuyerRepositoryInterface
-	HistoryRepo history_repository.HistoryRepo
-	Token       helper.TokenUseCase
+type AuthServiceImpl struct {
+	authRepository buyer_repository.AuthRepository
+	tokenUseCase   helper.TokenUseCase
 }
 
-func NewBuyerService(repo buyer_repository.BuyerRepositoryInterface, token helper.TokenUseCase, history history_repository.HistoryRepo) *BuyerService {
-	return &BuyerService{
-		Repo:        repo,
-		HistoryRepo: history,
-		Token:       token,
+func NewAuthService(
+	authRepository buyer_repository.AuthRepository,
+	tokenUseCase helper.TokenUseCase,
+) *AuthServiceImpl {
+	return &AuthServiceImpl{
+		authRepository: authRepository,
+		tokenUseCase:   tokenUseCase,
 	}
 }
 
-func (service *BuyerService) Register(req buyer_web.BuyerRequest) (helper.CustomResponse, error) {
+func (service *AuthServiceImpl) Register(req buyer_web.RegisterBuyerRequest) (helper.CustomResponse, error) {
 	passHash, errHash := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.MinCost)
 
 	if errHash != nil {
 		return nil, errHash
 	}
 
-	newBuyer := domain.Buyers{
+	newBuyer := domain.Buyer{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(passHash),
 	}
 
-	result, err := service.Repo.Register(newBuyer)
+	result, err := service.authRepository.Register(newBuyer)
 
 	if err != nil {
 		return nil, err
 	}
 
-	data := helper.CustomResponse{
-		"name":     result.Name,
-		"email":    result.Email,
-		"password": result.Password,
-	}
-
-	return data, nil
+	return helper.CustomResponse{
+		"id":    result.BuyerID,
+		"name":  result.Name,
+		"email": result.Email,
+	}, nil
 }
 
-func (service *BuyerService) Login(email, password string) (helper.CustomResponse, error) {
-	user, errUser := service.Repo.GetEmail(email)
-
-	if errUser != nil {
-		return nil, errUser
+func (service *AuthServiceImpl) Login(email, password string) (helper.CustomResponse, error) {
+	buyer, getBuyerErr := service.authRepository.GetEmail(email)
+	if getBuyerErr != nil {
+		return nil, errors.New("wrong email or password")
 	}
 
-	if errPass := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); errPass != nil {
-		return nil, errors.New("password not match")
+	if checkPasswordErr := bcrypt.CompareHashAndPassword([]byte(buyer.Password), []byte(password)); checkPasswordErr != nil {
+		return nil, errors.New("wrong email or password")
 	}
 
-	expiredTime := time.Now().Add(5 * time.Minute)
-
-	claims := helper.JwtCustomClaims{
-		ID:    strconv.Itoa(user.BuyerID),
-		Name:  user.Name,
-		Email: user.Email,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "Echo",
-			ExpiresAt: jwt.NewNumericDate(expiredTime),
-		},
+	loginResponse, loginErr := helper.Login(enum.UserTypeBuyer, buyer.BuyerID, buyer.Email)
+	if loginErr != nil {
+		return nil, loginErr
 	}
 
-	token, errToken := service.Token.GenerateAccessToken(claims)
-
-	if errToken != nil {
-		return nil, errToken
-	}
-
-	data := helper.CustomResponse{
-		"token":      token,
-		"expired_at": expiredTime.Format(time.RFC3339),
-	}
-
-	return data, nil
+	return helper.CustomResponse{
+		"token":      loginResponse["token"],
+		"expires_at": loginResponse["expires_at"],
+	}, nil
 }
 
-func (service *BuyerService) Update(userId int, req buyer_web.BuyerUpdateRequest) (helper.CustomResponse, error) {
-	buyer, errBuyer := service.Repo.GetByID(userId)
+func (service *AuthServiceImpl) Update(userId int, req buyer_web.UpdateBuyerRequest) (helper.CustomResponse, error) {
+	buyer, errBuyer := service.authRepository.GetByID(userId)
 
 	if errBuyer != nil {
 		return nil, errBuyer
@@ -120,23 +98,23 @@ func (service *BuyerService) Update(userId int, req buyer_web.BuyerUpdateRequest
 		buyer.Password = string(passHash)
 	}
 
-	result, errUpdate := service.Repo.Update(userId, buyer)
+	result, errUpdate := service.authRepository.Update(userId, buyer)
 
 	if errUpdate != nil {
 		return nil, errUpdate
 	}
 
 	data := helper.CustomResponse{
-		"name":     result.Name,
-		"email":    result.Email,
-		"password": result.Password,
+		"id":    result.BuyerID,
+		"name":  result.Name,
+		"email": result.Email,
 	}
 
 	return data, nil
 }
 
-func (service *BuyerService) ViewMe(userId int) (buyer_entity.BuyerEntity, error) {
-	buyer, err := service.Repo.GetByID(userId)
+func (service *AuthServiceImpl) ViewMe(userId int) (buyer_entity.BuyerEntity, error) {
+	buyer, err := service.authRepository.GetByID(userId)
 	if err != nil {
 		return buyer_entity.BuyerEntity{}, err
 	}

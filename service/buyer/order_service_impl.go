@@ -15,25 +15,29 @@ import (
 )
 
 type OrderServiceImpl struct {
-	db         *gorm.DB
-	orderRepo  buyer_repository.OrderRepository
-	sellerRepo buyer_repository.SellerRepository
+	db               *gorm.DB
+	orderRepository  buyer_repository.OrderRepository
+	sellerRepository buyer_repository.SellerRepository
 }
 
-func NewOrderService(db *gorm.DB, orderRepo buyer_repository.OrderRepository, sellerRepo buyer_repository.SellerRepository) *OrderServiceImpl {
+func NewOrderService(
+	db *gorm.DB,
+	orderRepository buyer_repository.OrderRepository,
+	sellerRepository buyer_repository.SellerRepository,
+) *OrderServiceImpl {
 	return &OrderServiceImpl{
-		db:         db,
-		orderRepo:  orderRepo,
-		sellerRepo: sellerRepo,
+		db:               db,
+		orderRepository:  orderRepository,
+		sellerRepository: sellerRepository,
 	}
 }
 
 func (service *OrderServiceImpl) WithTx(tx *gorm.DB) OrderService {
-	return &OrderServiceImpl{tx, service.orderRepo, service.sellerRepo}
+	return &OrderServiceImpl{tx, service.orderRepository, service.sellerRepository}
 }
 
-func (service *OrderServiceImpl) ListOrder() ([]buyer_entity.HistoryLiteEntity, error) {
-	histories, err := service.orderRepo.ListHistory()
+func (service *OrderServiceImpl) ListOrder(filters map[string]string, sort string, limit int, page int) ([]buyer_entity.HistoryLiteEntity, error) {
+	histories, err := service.orderRepository.ListHistory(filters, sort, limit, page)
 
 	if err != nil {
 		return []buyer_entity.HistoryLiteEntity{}, err
@@ -43,7 +47,7 @@ func (service *OrderServiceImpl) ListOrder() ([]buyer_entity.HistoryLiteEntity, 
 }
 
 func (service *OrderServiceImpl) ViewOrder(historyId int) (buyer_entity.HistoryEntity, error) {
-	history, err := service.orderRepo.GetHistory(historyId)
+	history, err := service.orderRepository.GetHistory(historyId)
 
 	if err != nil {
 		return buyer_entity.HistoryEntity{}, err
@@ -52,28 +56,28 @@ func (service *OrderServiceImpl) ViewOrder(historyId int) (buyer_entity.HistoryE
 	return buyer_entity.ToHistoryEntity(history), nil
 }
 
-func (service *OrderServiceImpl) CreateOrder(request buyer_web.OrderRequest, buyerId int) (buyer_entity.HistoryEntity, error) {
+func (service *OrderServiceImpl) CreateOrder(request buyer_web.CreateOrderRequest, buyerId int) (buyer_entity.HistoryEntity, error) {
 	number, generateOrderNumberErr := service.generateOrderNumber(buyerId)
 	if generateOrderNumberErr != nil {
 		return buyer_entity.HistoryEntity{}, generateOrderNumberErr
 	}
 
 	history := domain.History{}
-	history.BuyyerIDFK = buyerId
+	history.BuyerIDFK = buyerId
 	history.Number = number
-	history.PaymentStatus = enum.PaymentStatusPending
+	history.PaymentStatus = string(enum.PaymentStatusPending)
 	history.Total = 0
-	history, createHistoryErr := service.orderRepo.CreateHistory(history)
+	history, createHistoryErr := service.orderRepository.CreateHistory(history)
 	if createHistoryErr != nil {
 		return buyer_entity.HistoryEntity{}, createHistoryErr
 	}
 
-	event, getEventErr := service.orderRepo.GetEvent(request.EventID)
+	event, getEventErr := service.orderRepository.GetEvent(request.EventID)
 	if getEventErr != nil {
 		return buyer_entity.HistoryEntity{}, getEventErr
 	}
 
-	if event.Status != enum.EventStatusActive {
+	if event.Status != string(enum.EventStatusActive) {
 		return buyer_entity.HistoryEntity{}, errors.New("event is not active")
 	}
 	if event.Qty < request.Qty {
@@ -82,21 +86,21 @@ func (service *OrderServiceImpl) CreateOrder(request buyer_web.OrderRequest, buy
 
 	historyItem := domain.HistoryItem{}
 	historyItem.HistoryIDFK = history.Id
-	historyItem.EventIDFK = event.ID
+	historyItem.EventIDFK = event.EventID
 	historyItem.Price = event.Price
 	historyItem.Qty = request.Qty
 	historyItem.Subtotal = historyItem.Price * float64(historyItem.Qty)
-	historyItem, createHistoryItemErr := service.orderRepo.CreateHistoryItem(historyItem)
+	historyItem, createHistoryItemErr := service.orderRepository.CreateHistoryItem(historyItem)
 	if createHistoryItemErr != nil {
 		return buyer_entity.HistoryEntity{}, createHistoryItemErr
 	}
 
 	history.Total += historyItem.Subtotal
-	history, updateHistoryErr := service.orderRepo.UpdateHistory(history)
+	history, updateHistoryErr := service.orderRepository.UpdateHistory(history)
 	if updateHistoryErr != nil {
 		return buyer_entity.HistoryEntity{}, updateHistoryErr
 	}
-	history, getHistoryErr := service.orderRepo.GetHistory(history.Id)
+	history, getHistoryErr := service.orderRepository.GetHistory(history.Id)
 	if getHistoryErr != nil {
 		return buyer_entity.HistoryEntity{}, getHistoryErr
 	}
@@ -105,7 +109,7 @@ func (service *OrderServiceImpl) CreateOrder(request buyer_web.OrderRequest, buy
 }
 
 func (service *OrderServiceImpl) DeleteActiveOrder(buyerId int) error {
-	activeHistory, getActiveHistoryErr := service.orderRepo.GetActiveHistory(buyerId)
+	activeHistory, getActiveHistoryErr := service.orderRepository.GetActiveHistory(buyerId)
 	if getActiveHistoryErr != nil {
 		return getActiveHistoryErr
 	}
@@ -114,12 +118,12 @@ func (service *OrderServiceImpl) DeleteActiveOrder(buyerId int) error {
 		var historyItems []domain.HistoryItem
 		historyItems = activeHistory.HistoryItems
 		for _, historyItem := range historyItems {
-			if deleteHistoryItemErr := service.orderRepo.DeleteHistoryItem(historyItem); deleteHistoryItemErr != nil {
+			if deleteHistoryItemErr := service.orderRepository.DeleteHistoryItem(historyItem); deleteHistoryItemErr != nil {
 				return deleteHistoryItemErr
 			}
 		}
 
-		if deleteHistoryErr := service.orderRepo.DeleteHistory(activeHistory); deleteHistoryErr != nil {
+		if deleteHistoryErr := service.orderRepository.DeleteHistory(activeHistory); deleteHistoryErr != nil {
 			return deleteHistoryErr
 		}
 	}
@@ -138,7 +142,7 @@ func (service *OrderServiceImpl) generateOrderNumber(buyerId int) (string, error
 	if len(day) == 1 {
 		day = fmt.Sprintf("0%s", day)
 	}
-	latestOrder, err := service.orderRepo.GetLatestOrder(buyerId)
+	latestOrder, err := service.orderRepository.GetLatestOrder(buyerId)
 	if err != nil {
 		return "", err
 	}
@@ -156,12 +160,12 @@ func (service *OrderServiceImpl) generateOrderNumber(buyerId int) (string, error
 }
 
 func (service *OrderServiceImpl) PayOrder(orderId int) (buyer_entity.HistoryEntity, error) {
-	history, err := service.orderRepo.GetHistory(orderId)
+	history, err := service.orderRepository.GetHistory(orderId)
 	if err != nil {
 		return buyer_entity.HistoryEntity{}, err
 	}
 
-	if history.PaymentStatus == enum.PaymentStatusPaid {
+	if history.PaymentStatus == string(enum.PaymentStatusPaid) {
 		return buyer_entity.HistoryEntity{}, errors.New("order already paid")
 	}
 
@@ -171,20 +175,22 @@ func (service *OrderServiceImpl) PayOrder(orderId int) (buyer_entity.HistoryEnti
 		if event.Qty < 0 {
 			return buyer_entity.HistoryEntity{}, errors.New("not enough ticket")
 		}
-		event, err = service.orderRepo.UpdateEvent(event)
+		event, err = service.orderRepository.UpdateEvent(event)
 		if err != nil {
 			return buyer_entity.HistoryEntity{}, err
 		}
 
 		seller := event.Seller
-		seller, updateSellerErr := service.sellerRepo.AddSellerBalance(seller, historyItem.Subtotal)
+		seller, updateSellerErr := service.sellerRepository.AddSellerBalance(seller, historyItem.Subtotal)
 		if updateSellerErr != nil {
 			return buyer_entity.HistoryEntity{}, updateSellerErr
 		}
 	}
 
-	history.PaymentStatus = enum.PaymentStatusPaid
-	history, err = service.orderRepo.UpdateHistory(history)
+	history.PaymentStatus = string(enum.PaymentStatusPaid)
+	now := time.Now()
+	history.PaidAt = &now
+	history, err = service.orderRepository.UpdateHistory(history)
 	if err != nil {
 		return buyer_entity.HistoryEntity{}, err
 	}
@@ -193,21 +199,21 @@ func (service *OrderServiceImpl) PayOrder(orderId int) (buyer_entity.HistoryEnti
 }
 
 func (service *OrderServiceImpl) DeleteOrder(historyId int) error {
-	history, getHistoryErr := service.orderRepo.GetHistory(historyId)
+	history, getHistoryErr := service.orderRepository.GetHistory(historyId)
 	if getHistoryErr != nil {
 		return getHistoryErr
 	}
 
-	if history.PaymentStatus == enum.PaymentStatusPaid {
+	if history.PaymentStatus == string(enum.PaymentStatusPaid) {
 		return errors.New("cannot delete paid order")
 	}
 
 	for _, historyItem := range history.HistoryItems {
-		err := service.orderRepo.DeleteHistoryItem(historyItem)
+		err := service.orderRepository.DeleteHistoryItem(historyItem)
 		if err != nil {
 			return err
 		}
 	}
 
-	return service.orderRepo.DeleteHistory(history)
+	return service.orderRepository.DeleteHistory(history)
 }

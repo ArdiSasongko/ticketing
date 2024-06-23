@@ -6,17 +6,17 @@ import (
 )
 
 type EventServiceImpl struct {
-	repository buyer_repository.EventRepository
+	eventRepository buyer_repository.EventRepository
 }
 
-func NewEventService(repository buyer_repository.EventRepository) *EventServiceImpl {
+func NewEventService(eventRepository buyer_repository.EventRepository) *EventServiceImpl {
 	return &EventServiceImpl{
-		repository: repository,
+		eventRepository: eventRepository,
 	}
 }
 
 func (service *EventServiceImpl) GetEventList(filters map[string]string, sort string, limit int, page int) ([]buyer_entity.EventEntity, error) {
-	events, err := service.repository.ListEvents(filters, sort, limit, page)
+	events, err := service.eventRepository.ListEvents(filters, sort, limit, page)
 	if err != nil {
 		return []buyer_entity.EventEntity{}, err
 	}
@@ -25,7 +25,7 @@ func (service *EventServiceImpl) GetEventList(filters map[string]string, sort st
 }
 
 func (service *EventServiceImpl) ViewEvent(eventId int) (buyer_entity.EventEntity, error) {
-	event, getEventErr := service.repository.GetEvent(eventId)
+	event, getEventErr := service.eventRepository.GetEvent(eventId)
 	if getEventErr != nil {
 		return buyer_entity.EventEntity{}, getEventErr
 	}

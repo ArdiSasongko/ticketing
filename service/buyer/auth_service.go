@@ -6,9 +6,9 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/model/web/buyer"
 )
 
-type BuyerServiceInterface interface {
-	Register(req buyer_web.BuyerRequest) (helper.CustomResponse, error)
+type AuthService interface {
+	Register(req buyer_web.RegisterBuyerRequest) (helper.CustomResponse, error)
 	Login(email, password string) (helper.CustomResponse, error)
-	Update(userId int, req buyer_web.BuyerUpdateRequest) (helper.CustomResponse, error)
+	Update(userId int, req buyer_web.UpdateBuyerRequest) (helper.CustomResponse, error)
 	ViewMe(userId int) (buyer_entity.BuyerEntity, error)
 }
