@@ -28,7 +28,8 @@ func NewOrderController(orderService buyer_service.OrderService) *OrderControlle
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param filters query string false "Filters"
+// @Param filter[number] query string false "Filter"
+// @Param filter[payment_status] query string false "Filter"
 // @Param sort query string false "Sort"
 // @Param limit query int false "Limit"
 // @Param page query int false "Page"
@@ -43,7 +44,7 @@ func (controller *OrderControllerImpl) List(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "list order success", histories))
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", histories))
 }
 
 // View godoc
@@ -52,6 +53,7 @@ func (controller *OrderControllerImpl) List(c echo.Context) error {
 // @Tags [Buyer] Order
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Param id path int true "id"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 500 {object} helper.ResponseClientModel
@@ -64,7 +66,7 @@ func (controller *OrderControllerImpl) View(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "view order success", history))
+	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Success", history))
 }
 
 // Create godoc
@@ -73,6 +75,7 @@ func (controller *OrderControllerImpl) View(c echo.Context) error {
 // @Tags [Buyer] Order
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Param event body buyer_web.CreateOrderRequest true "Create Event Request"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
@@ -116,6 +119,7 @@ func (controller *OrderControllerImpl) Create(c echo.Context) error {
 // @Tags [Buyer] Order
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Param id path int true "Event ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
@@ -125,7 +129,7 @@ func (controller *OrderControllerImpl) Pay(c echo.Context) error {
 
 	_, err := controller.orderService.PayOrder(orderId)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Pay Order Success", nil))
@@ -137,10 +141,11 @@ func (controller *OrderControllerImpl) Pay(c echo.Context) error {
 // @Tags [Buyer] Order
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Param id path int true "ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /buyer/orders/:id [delete]
+// @Router /buyer/orders/{id} [delete]
 func (controller *OrderControllerImpl) Delete(c echo.Context) error {
 	orderId, _ := strconv.Atoi(c.Param("id"))
 

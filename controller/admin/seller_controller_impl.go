@@ -26,7 +26,8 @@ func NewSellerController(sellerService admin_service.SellerService) *SellerContr
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param filters query string false "Filters"
+// @Param filter[name] query string false "Filter"
+// @Param filter[email] query string false "Filter"
 // @Param sort query string false "Sort"
 // @Param limit query int false "Limit"
 // @Param page query int false "Page"
@@ -51,6 +52,7 @@ func (controller *SellerControllerImpl) List(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
+// @Param id path string true "ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /admin/sellers/{id} [get]

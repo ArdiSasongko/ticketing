@@ -77,6 +77,7 @@ func (controller *SellerControllerImpl) Login(c echo.Context) error {
 // @Tags [Seller] Me
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Param id path int true "Seller ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 404 {object} helper.ResponseClientModel
@@ -99,6 +100,7 @@ func (controller *SellerControllerImpl) View(c echo.Context) error {
 // @Tags [Seller] Me
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Param id path int true "Seller ID"
 // @Param seller body seller_web.UpdateSellerRequest true "Update Seller Request"
 // @Success 200 {object} helper.ResponseClientModel

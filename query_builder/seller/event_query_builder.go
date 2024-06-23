@@ -36,7 +36,6 @@ func (eventQueryBuilder *EventQueryBuilderImpl) GetBuilder(sellerId int, filters
 
 func (eventQueryBuilder *EventQueryBuilderImpl) getAllowedFilters() []string {
 	return []string{
-		"seller_id",
 		"category",
 		"location",
 		"name",

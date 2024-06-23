@@ -47,8 +47,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[name]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[email]",
                         "in": "query"
                     },
                     {
@@ -105,6 +111,13 @@ const docTemplate = `{
                         "description": "Token",
                         "name": "Authorization",
                         "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -227,8 +240,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[name]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[email]",
                         "in": "query"
                     },
                     {
@@ -286,6 +305,13 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -317,6 +343,15 @@ const docTemplate = `{
                     "[Admin] Me"
                 ],
                 "summary": "Me (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -346,6 +381,15 @@ const docTemplate = `{
                     "[Admin] Me"
                 ],
                 "summary": "Me (Update)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -385,8 +429,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[name]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[email]",
                         "in": "query"
                     },
                     {
@@ -443,6 +493,13 @@ const docTemplate = `{
                         "description": "Token",
                         "name": "Authorization",
                         "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -565,8 +622,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[category]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[location]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[name]",
                         "in": "query"
                     },
                     {
@@ -664,10 +733,10 @@ const docTemplate = `{
                 "summary": "Me (View)",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Buyer ID",
-                        "name": "id",
-                        "in": "path",
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -702,10 +771,10 @@ const docTemplate = `{
                 "summary": "Me (Update)",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Buyer ID",
-                        "name": "id",
-                        "in": "path",
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     },
                     {
@@ -757,8 +826,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[number]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[payment_status]",
                         "in": "query"
                     },
                     {
@@ -809,6 +884,13 @@ const docTemplate = `{
                 "summary": "Order (Create)",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Create Event Request",
                         "name": "event",
                         "in": "body",
@@ -816,44 +898,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/buyer_web.CreateOrderRequest"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ResponseClientModel"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ResponseClientModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/buyer/orders/:id": {
-            "delete": {
-                "description": "Order (Delete)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "[Buyer] Order"
-                ],
-                "summary": "Order (Delete)",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -887,6 +931,13 @@ const docTemplate = `{
                 "summary": "Order (View)",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
                         "description": "id",
                         "name": "id",
@@ -908,6 +959,49 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Order (Delete)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Order"
+                ],
+                "summary": "Order (Delete)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
             }
         },
         "/buyer/orders/{id}/pay": {
@@ -924,6 +1018,13 @@ const docTemplate = `{
                 ],
                 "summary": "Order (Pay)",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Event ID",
@@ -948,6 +1049,113 @@ const docTemplate = `{
                 }
             }
         },
+        "/buyer/tickets": {
+            "get": {
+                "description": "Ticket (List)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Ticket"
+                ],
+                "summary": "Ticket (List)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[status]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/buyer/tickets/{id}": {
+            "get": {
+                "description": "Ticket (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Ticket"
+                ],
+                "summary": "Ticket (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
         "/general/events": {
             "get": {
                 "description": "Event (List)",
@@ -964,15 +1172,20 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
+                        "description": "Filter",
+                        "name": "filter[category]",
+                        "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[location]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[name]",
                         "in": "query"
                     },
                     {
@@ -1024,13 +1237,6 @@ const docTemplate = `{
                 ],
                 "summary": "Event (View)",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "id",
@@ -1157,16 +1363,21 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Seller ID",
-                        "name": "seller_id",
-                        "in": "query",
-                        "required": true
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[category]",
+                        "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
+                        "description": "Filter",
+                        "name": "filter[location]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter",
+                        "name": "filter[name]",
                         "in": "query"
                     },
                     {
@@ -1249,7 +1460,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/seller/events/:event_id/tickets/:ticket_id/check-in": {
+        "/seller/events/{event_id}/tickets/{ticket_id}/check-in": {
             "put": {
                 "description": "(Check In Ticket)",
                 "consumes": [
@@ -1273,7 +1484,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "ID",
-                        "name": "id",
+                        "name": "event_id",
                         "in": "path",
                         "required": true
                     },
@@ -1281,51 +1492,6 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Ticket ID",
                         "name": "ticket_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ResponseClientModel"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ResponseClientModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/seller/events/:id": {
-            "delete": {
-                "description": "Event (Delete)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "[Seller] Event"
-                ],
-                "summary": "Event (Delete)",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "ID",
-                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -1368,13 +1534,11 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Create Event Request",
-                        "name": "event",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/seller_web.CreateEventRequest"
-                        }
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1443,9 +1607,52 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Event (Delete)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Seller] Event"
+                ],
+                "summary": "Event (Delete)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
             }
         },
-        "/seller/events/{id}/status": {
+        "/seller/events/{id}/update-status": {
             "patch": {
                 "description": "Event (Update Status)",
                 "consumes": [
@@ -1514,6 +1721,13 @@ const docTemplate = `{
                 "summary": "Me (View)",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
                         "description": "Seller ID",
                         "name": "id",
@@ -1551,6 +1765,13 @@ const docTemplate = `{
                 ],
                 "summary": "Me (Update)",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Seller ID",
@@ -1708,8 +1929,7 @@ const docTemplate = `{
                 "location",
                 "name",
                 "price",
-                "qty",
-                "seller_id"
+                "qty"
             ],
             "properties": {
                 "category": {
@@ -1728,9 +1948,6 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "qty": {
-                    "type": "integer"
-                },
-                "seller_id": {
                     "type": "integer"
                 }
             }
@@ -1797,9 +2014,6 @@ const docTemplate = `{
                 },
                 "qty": {
                     "type": "integer"
-                },
-                "seller_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -1846,7 +2060,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8001",
+	Host:             "localhost:8010",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Ticketing API",

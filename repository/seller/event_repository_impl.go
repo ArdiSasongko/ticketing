@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/ArdiSasongko/ticketing_app/app"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
+	"github.com/ArdiSasongko/ticketing_app/model/enum"
 	"github.com/ArdiSasongko/ticketing_app/query_builder/seller"
 	"gorm.io/gorm"
 )
@@ -68,11 +69,11 @@ func (repo *EventRepositoryImpl) CheckInTicket(eventID int, ticketID int) error 
 		return err
 	}
 
-	if ticket.Status == "Used" {
+	if ticket.Status == string(enum.TicketStatusUsed) {
 		return errors.New("Ticket has already been checked in")
 	}
 
-	ticket.Status = "Used"
+	ticket.Status = string(enum.TicketStatusUsed)
 	if err := repo.db.Save(&ticket).Error; err != nil {
 		return err
 	}

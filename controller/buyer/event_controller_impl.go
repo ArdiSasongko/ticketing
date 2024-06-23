@@ -27,7 +27,9 @@ func NewEventController(service buyer_service.EventService) *EventControllerImpl
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param filters query string false "Filters"
+// @Param filter[category] query string false "Filter"
+// @Param filter[location] query string false "Filter"
+// @Param filter[name] query string false "Filter"
 // @Param sort query string false "Sort"
 // @Param limit query int false "Limit"
 // @Param page query int false "Page"
@@ -58,9 +60,9 @@ func (controller *EventControllerImpl) List(c echo.Context) error {
 func (controller *EventControllerImpl) View(c echo.Context) error {
 	eventId, _ := strconv.Atoi(c.Param("id"))
 
-	event, getEventErr := controller.eventService.ViewEvent(eventId) // todo: load seller
+	event, getEventErr := controller.eventService.ViewEvent(eventId)
 	if getEventErr != nil {
-		return c.JSON(http.StatusInternalServerError, model.ResponseToClient(http.StatusInternalServerError, getEventErr.Error(), nil))
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, getEventErr.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", event))

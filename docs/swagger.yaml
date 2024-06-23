@@ -91,8 +91,6 @@ definitions:
         type: number
       qty:
         type: integer
-      seller_id:
-        type: integer
     required:
     - category
     - date
@@ -100,7 +98,6 @@ definitions:
     - name
     - price
     - qty
-    - seller_id
     type: object
   seller_web.LoginSellerRequest:
     properties:
@@ -139,8 +136,6 @@ definitions:
         type: number
       qty:
         type: integer
-      seller_id:
-        type: integer
     required:
     - category
     - date
@@ -169,7 +164,7 @@ definitions:
     - name
     - password
     type: object
-host: localhost:8001
+host: localhost:8010
 info:
   contact:
     email: support@swagger.io
@@ -194,9 +189,13 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Filters
+      - description: Filter
         in: query
-        name: filters
+        name: filter[name]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[email]
         type: string
       - description: Sort
         in: query
@@ -233,6 +232,11 @@ paths:
       - description: Token
         in: header
         name: Authorization
+        required: true
+        type: string
+      - description: ID
+        in: path
+        name: id
         required: true
         type: string
       produces:
@@ -312,9 +316,13 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Filters
+      - description: Filter
         in: query
-        name: filters
+        name: filter[name]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[email]
         type: string
       - description: Sort
         in: query
@@ -353,6 +361,11 @@ paths:
         name: Authorization
         required: true
         type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -372,6 +385,12 @@ paths:
       consumes:
       - application/json
       description: Me (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -391,6 +410,12 @@ paths:
       consumes:
       - application/json
       description: Me (Update)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -416,9 +441,13 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Filters
+      - description: Filter
         in: query
-        name: filters
+        name: filter[name]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[email]
         type: string
       - description: Sort
         in: query
@@ -455,6 +484,11 @@ paths:
       - description: Token
         in: header
         name: Authorization
+        required: true
+        type: string
+      - description: ID
+        in: path
+        name: id
         required: true
         type: string
       produces:
@@ -534,9 +568,17 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Filters
+      - description: Filter
         in: query
-        name: filters
+        name: filter[category]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[location]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[name]
         type: string
       - description: Sort
         in: query
@@ -600,11 +642,11 @@ paths:
       - application/json
       description: Me (View)
       parameters:
-      - description: Buyer ID
-        in: path
-        name: id
+      - description: Token
+        in: header
+        name: Authorization
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -625,11 +667,11 @@ paths:
       - application/json
       description: Me (Update)
       parameters:
-      - description: Buyer ID
-        in: path
-        name: id
+      - description: Token
+        in: header
+        name: Authorization
         required: true
-        type: integer
+        type: string
       - description: Updated buyer details
         in: body
         name: buyer
@@ -661,9 +703,13 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Filters
+      - description: Filter
         in: query
-        name: filters
+        name: filter[number]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[payment_status]
         type: string
       - description: Sort
         in: query
@@ -696,6 +742,11 @@ paths:
       - application/json
       description: Order (Create)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Create Event Request
         in: body
         name: event
@@ -716,12 +767,17 @@ paths:
       summary: Order (Create)
       tags:
       - '[Buyer] Order'
-  /buyer/orders/:id:
+  /buyer/orders/{id}:
     delete:
       consumes:
       - application/json
       description: Order (Delete)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: ID
         in: path
         name: id
@@ -741,12 +797,16 @@ paths:
       summary: Order (Delete)
       tags:
       - '[Buyer] Order'
-  /buyer/orders/{id}:
     get:
       consumes:
       - application/json
       description: Order (View)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: id
         in: path
         name: id
@@ -772,6 +832,11 @@ paths:
       - application/json
       description: Order (Pay)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Event ID
         in: path
         name: id
@@ -791,20 +856,94 @@ paths:
       summary: Order (Pay)
       tags:
       - '[Buyer] Order'
-  /general/events:
+  /buyer/tickets:
     get:
       consumes:
       - application/json
-      description: Event (List)
+      description: Ticket (List)
       parameters:
       - description: Token
         in: header
         name: Authorization
         required: true
         type: string
-      - description: Filters
+      - description: Filter
         in: query
-        name: filters
+        name: filter[status]
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Ticket (List)
+      tags:
+      - '[Buyer] Ticket'
+  /buyer/tickets/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Ticket (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Ticket (View)
+      tags:
+      - '[Buyer] Ticket'
+  /general/events:
+    get:
+      consumes:
+      - application/json
+      description: Event (List)
+      parameters:
+      - description: Filter
+        in: query
+        name: filter[category]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[location]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[name]
         type: string
       - description: Sort
         in: query
@@ -838,11 +977,6 @@ paths:
       - application/json
       description: Event (View)
       parameters:
-      - description: Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: id
         in: path
         name: id
@@ -925,14 +1059,17 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Seller ID
+      - description: Filter
         in: query
-        name: seller_id
-        required: true
-        type: integer
-      - description: Filters
+        name: filter[category]
+        type: string
+      - description: Filter
         in: query
-        name: filters
+        name: filter[location]
+        type: string
+      - description: Filter
+        in: query
+        name: filter[name]
         type: string
       - description: Sort
         in: query
@@ -990,7 +1127,7 @@ paths:
       summary: Event (Create)
       tags:
       - '[Seller] Event'
-  /seller/events/:event_id/tickets/:ticket_id/check-in:
+  /seller/events/{event_id}/tickets/{ticket_id}/check-in:
     put:
       consumes:
       - application/json
@@ -1003,7 +1140,7 @@ paths:
         type: string
       - description: ID
         in: path
-        name: id
+        name: event_id
         required: true
         type: integer
       - description: Ticket ID
@@ -1025,7 +1162,7 @@ paths:
       summary: Event (Check In Ticket)
       tags:
       - '[Seller] Event'
-  /seller/events/:id:
+  /seller/events/{id}:
     delete:
       consumes:
       - application/json
@@ -1055,7 +1192,6 @@ paths:
       summary: Event (Delete)
       tags:
       - '[Seller] Event'
-  /seller/events/{id}:
     get:
       consumes:
       - application/json
@@ -1066,12 +1202,11 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Create Event Request
-        in: body
-        name: event
+      - description: ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/seller_web.CreateEventRequest'
+        type: string
       produces:
       - application/json
       responses:
@@ -1121,7 +1256,7 @@ paths:
       summary: Event (Update)
       tags:
       - '[Seller] Event'
-  /seller/events/{id}/status:
+  /seller/events/{id}/update-status:
     patch:
       consumes:
       - application/json
@@ -1163,6 +1298,11 @@ paths:
       - application/json
       description: Me (View)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Seller ID
         in: path
         name: id
@@ -1188,6 +1328,11 @@ paths:
       - application/json
       description: Me (Update)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Seller ID
         in: path
         name: id

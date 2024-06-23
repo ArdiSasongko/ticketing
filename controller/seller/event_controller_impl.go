@@ -28,8 +28,9 @@ func NewEventController(eventService seller_service.EventService) *EventControll
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param seller_id query int true "Seller ID"
-// @Param filters query string false "Filters"
+// @Param filter[category] query string false "Filter"
+// @Param filter[location] query string false "Filter"
+// @Param filter[name] query string false "Filter"
 // @Param sort query string false "Sort"
 // @Param limit query int false "Limit"
 // @Param page query int false "Page"
@@ -60,7 +61,7 @@ func (controller *EventControllerImpl) List(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param event body seller_web.CreateEventRequest true "Create Event Request"
+// @Param id path string true "ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /seller/events/{id} [get]
@@ -85,7 +86,7 @@ func (controller *EventControllerImpl) View(c echo.Context) error {
 // @Param event body seller_web.CreateEventRequest true "Create Event Request"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /seller/events [post]
+// @Router /seller/events [post] // todo
 func (controller *EventControllerImpl) Create(c echo.Context) error {
 	events := new(seller_web.CreateEventRequest)
 
@@ -150,7 +151,7 @@ func (controller *EventControllerImpl) Update(c echo.Context) error {
 // @Param event body seller_web.UpdateEventStatusRequest true "Update Event Request"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /seller/events/{id}/status [patch]
+// @Router /seller/events/{id}/update-status [patch]
 func (controller *EventControllerImpl) UpdateStatus(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -180,11 +181,11 @@ func (controller *EventControllerImpl) UpdateStatus(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param id path int true "ID"
+// @Param event_id path int true "ID"
 // @Param ticket_id path int true "Ticket ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /seller/events/:event_id/tickets/:ticket_id/check-in [put]
+// @Router /seller/events/{event_id}/tickets/{ticket_id}/check-in [put] // todo
 func (controller *EventControllerImpl) CheckInTicket(c echo.Context) error {
 	eventID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -214,7 +215,7 @@ func (controller *EventControllerImpl) CheckInTicket(c echo.Context) error {
 // @Param id path int true "ID"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /seller/events/:id [delete]
+// @Router /seller/events/{id} [delete]
 func (controller *EventControllerImpl) Delete(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 

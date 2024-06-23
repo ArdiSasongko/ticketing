@@ -1,7 +1,6 @@
 package seller_web
 
 type CreateEventRequest struct {
-	SellerID int     `json:"seller_id" validate:"required"`
 	Name     string  `json:"name" validate:"required"`
 	Date     string  `json:"date" validate:"required"`
 	Location string  `json:"location" validate:"required"`
@@ -11,7 +10,6 @@ type CreateEventRequest struct {
 }
 
 type UpdateEventRequest struct {
-	SellerID int     `json:"seller_id"`
 	Name     string  `json:"name" validate:"required"`
 	Date     string  `json:"date" validate:"required"`
 	Location string  `json:"location" validate:"required"`

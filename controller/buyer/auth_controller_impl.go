@@ -84,7 +84,7 @@ func (controller *AuthControllerImpl) Login(c echo.Context) error {
 // @Tags [Buyer] Me
 // @Accept json
 // @Produce json
-// @Param id path int true "Buyer ID"
+// @Param Authorization header string true "Token"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /buyer/me [get]
@@ -105,7 +105,7 @@ func (controller *AuthControllerImpl) View(c echo.Context) error {
 // @Tags [Buyer] Me
 // @Accept json
 // @Produce json
-// @Param id path int true "Buyer ID"
+// @Param Authorization header string true "Token"
 // @Param buyer body buyer_web.UpdateBuyerRequest true "Updated buyer details"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel

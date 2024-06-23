@@ -86,6 +86,7 @@ func (controller *AuthControllerImpl) Login(c echo.Context) error {
 // @Tags [Admin] Me
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /admin/me [get]
@@ -107,6 +108,8 @@ func (controller *AuthControllerImpl) View(c echo.Context) error {
 // @Tags [Admin] Me
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Token"
+// @Param event body buyer_web.UpdateAdminRequest true "Update Admin Request"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /admin/me/update [put]
