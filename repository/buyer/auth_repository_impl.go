@@ -8,45 +8,45 @@ import (
 	"gorm.io/gorm"
 )
 
-type BuyerRepo struct {
+type AuthRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewBuyerRepository(db *gorm.DB) *BuyerRepo {
-	return &BuyerRepo{
+func NewAuthRepository(db *gorm.DB) *AuthRepositoryImpl {
+	return &AuthRepositoryImpl{
 		DB: db,
 	}
 }
 
-func (repo *BuyerRepo) Register(buyer domain.Buyers) (domain.Buyers, error) {
+func (repo *AuthRepositoryImpl) Register(buyer domain.Buyer) (domain.Buyer, error) {
 	if err := repo.DB.Create(&buyer).Error; err != nil {
 		if strings.Contains(err.Error(), "duplicate key value") {
-			return domain.Buyers{}, errors.New("email already registered")
+			return domain.Buyer{}, errors.New("email already registered")
 		}
 	}
 	return buyer, nil
 }
 
-func (repo *BuyerRepo) GetEmail(email string) (domain.Buyers, error) {
-	var buyer domain.Buyers
+func (repo *AuthRepositoryImpl) GetEmail(email string) (domain.Buyer, error) {
+	var buyer domain.Buyer
 	if err := repo.DB.Where("email = ?", email).Take(&buyer).Error; err != nil {
-		return domain.Buyers{}, errors.New("email not found")
+		return domain.Buyer{}, errors.New("email not found")
 	}
 	return buyer, nil
 }
 
-func (repo *BuyerRepo) Update(userID int, buyer domain.Buyers) (domain.Buyers, error) {
-	if err := repo.DB.Model(&domain.Buyers{}).Where("id = ?", userID).Updates(buyer).Error; err != nil {
-		return domain.Buyers{}, errors.New("failed to update buyer")
+func (repo *AuthRepositoryImpl) Update(userID int, buyer domain.Buyer) (domain.Buyer, error) {
+	if err := repo.DB.Model(&domain.Buyer{}).Where("id = ?", userID).Updates(buyer).Error; err != nil {
+		return domain.Buyer{}, errors.New("failed to update buyer")
 	}
 
 	return buyer, nil
 }
 
-func (repo *BuyerRepo) GetByID(userID int) (domain.Buyers, error) {
-	var buyer domain.Buyers
+func (repo *AuthRepositoryImpl) GetByID(userID int) (domain.Buyer, error) {
+	var buyer domain.Buyer
 	if err := repo.DB.Where("id = ?", userID).Take(&buyer).Error; err != nil {
-		return domain.Buyers{}, errors.New("buyer not found")
+		return domain.Buyer{}, errors.New("buyer not found")
 	}
 	return buyer, nil
 }

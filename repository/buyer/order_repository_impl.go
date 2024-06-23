@@ -4,31 +4,39 @@ import (
 	"errors"
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
 	"github.com/ArdiSasongko/ticketing_app/model/enum"
+	buyer_query_builder "github.com/ArdiSasongko/ticketing_app/query_builder/buyer"
 	"gorm.io/gorm"
 	"time"
 )
 
 type OrderRepositoryImpl struct {
-	DB *gorm.DB
+	orderQueryBuilder buyer_query_builder.OrderQueryBuilder
+	DB                *gorm.DB
 }
 
-func NewOrderRepository(db *gorm.DB) *OrderRepositoryImpl {
+func NewOrderRepository(orderQueryBuilder buyer_query_builder.OrderQueryBuilder, db *gorm.DB) *OrderRepositoryImpl {
 	return &OrderRepositoryImpl{
-		DB: db,
+		orderQueryBuilder: orderQueryBuilder,
+		DB:                db,
 	}
 }
 
-func (repo *OrderRepositoryImpl) WithTx(tx *gorm.DB) OrderRepository {
-	return &OrderRepositoryImpl{tx}
+func (repo *OrderRepositoryImpl) WithTx(orderQueryBuilder buyer_query_builder.OrderQueryBuilder, tx *gorm.DB) OrderRepository {
+	return &OrderRepositoryImpl{orderQueryBuilder, tx}
 }
 
-func (repo *OrderRepositoryImpl) ListHistory() ([]domain.History, error) {
+func (repo *OrderRepositoryImpl) ListHistory(filters map[string]string, sort string, limit int, page int) ([]domain.History, error) {
 	var histories []domain.History
 
-	if err := repo.DB.Preload("HistoryItems.Event").Preload("Buyer").Find(&histories).Error; err != nil {
-		return []domain.History{}, err
+	orderQueryBuilder, err := repo.orderQueryBuilder.GetBuilder(filters, sort, limit, page)
+	if err != nil {
+		return nil, err
 	}
 
+	err1 := orderQueryBuilder.Find(&histories).Error
+	if err1 != nil {
+		return []domain.History{}, err1
+	}
 	return histories, nil
 }
 

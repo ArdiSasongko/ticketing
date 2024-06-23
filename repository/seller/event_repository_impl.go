@@ -28,7 +28,7 @@ func (repo *EventRepositoryImpl) ListEvents(sellerId int, filters map[string]str
 		return nil, err
 	}
 
-	err1 := eventQueryBuilder.Find(&events).Error
+	err1 := eventQueryBuilder.Preload("Seller").Find(&events).Error
 	if err1 != nil {
 		return []domain.Event{}, err1
 	}
@@ -42,9 +42,10 @@ func (repo *EventRepositoryImpl) CreateEvent(event domain.Event) (domain.Event, 
 	}
 	return event, nil
 }
+
 func (repo *EventRepositoryImpl) GetEventByID(id int) (domain.Event, error) {
 	var event domain.Event
-	err := repo.db.First(&event, id).Error
+	err := repo.db.Preload("Seller").First(&event, id).Error
 	if err != nil {
 		return domain.Event{}, err
 	}
@@ -52,7 +53,7 @@ func (repo *EventRepositoryImpl) GetEventByID(id int) (domain.Event, error) {
 }
 
 func (repo *EventRepositoryImpl) UpdateEvent(event domain.Event) (domain.Event, error) {
-	err := repo.db.Model(domain.Event{}).Where("id = ?", event.ID).Updates(event).Error
+	err := repo.db.Model(domain.Event{}).Where("id = ?", event.EventID).Updates(event).Error
 	if err != nil {
 		return domain.Event{}, err
 	}

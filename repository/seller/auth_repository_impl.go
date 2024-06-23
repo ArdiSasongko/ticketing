@@ -6,15 +6,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type SellerRepositoryImpl struct {
+type AuthRepositoryImpl struct {
 	db *gorm.DB
 }
 
-func NewSellerRepository(db *gorm.DB) *SellerRepositoryImpl {
-	return &SellerRepositoryImpl{db: db}
+func NewAuthRepository(db *gorm.DB) *AuthRepositoryImpl {
+	return &AuthRepositoryImpl{db: db}
 }
 
-func (repo *SellerRepositoryImpl) SaveSeller(seller domain.Sellers) (domain.Sellers, error) {
+func (repo *AuthRepositoryImpl) SaveSeller(seller domain.Sellers) (domain.Sellers, error) {
 	err := repo.db.Create(&seller).Error
 	if err != nil {
 		return domain.Sellers{}, err
@@ -22,7 +22,7 @@ func (repo *SellerRepositoryImpl) SaveSeller(seller domain.Sellers) (domain.Sell
 	return seller, nil
 }
 
-func (repo *SellerRepositoryImpl) FindUserByEmail(email string) (*domain.Sellers, error) {
+func (repo *AuthRepositoryImpl) FindUserByEmail(email string) (*domain.Sellers, error) {
 	seller := new(domain.Sellers)
 	if err := repo.db.Where("email = ?", email).Take(seller).Error; err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (repo *SellerRepositoryImpl) FindUserByEmail(email string) (*domain.Sellers
 	return seller, nil
 }
 
-func (repo *SellerRepositoryImpl) GetSeller(Id int) (domain.Sellers, error) {
+func (repo *AuthRepositoryImpl) GetSeller(Id int) (domain.Sellers, error) {
 	var sellerData domain.Sellers
 
 	err := repo.db.First(&sellerData, "id = ?", Id).Error
@@ -42,8 +42,8 @@ func (repo *SellerRepositoryImpl) GetSeller(Id int) (domain.Sellers, error) {
 	return sellerData, nil
 }
 
-func (repo *SellerRepositoryImpl) UpdateSeller(seller domain.Sellers) (domain.Sellers, error) {
-	err := repo.db.Model(domain.Sellers{}).Where("user_id=?", seller.SellerID).Updates(seller).Error
+func (repo *AuthRepositoryImpl) UpdateSeller(seller domain.Sellers) (domain.Sellers, error) {
+	err := repo.db.Model(domain.Sellers{}).Where("id = ?", seller.SellerID).Updates(seller).Error
 
 	if err != nil {
 		return seller, err

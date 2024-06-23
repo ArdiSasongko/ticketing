@@ -2,13 +2,14 @@ package buyer_repository
 
 import (
 	"github.com/ArdiSasongko/ticketing_app/model/domain"
+	buyer_query_builder "github.com/ArdiSasongko/ticketing_app/query_builder/buyer"
 	"gorm.io/gorm"
 )
 
 type OrderRepository interface {
-	WithTx(tx *gorm.DB) OrderRepository
+	WithTx(builder buyer_query_builder.OrderQueryBuilder, tx *gorm.DB) OrderRepository
 
-	ListHistory() ([]domain.History, error)
+	ListHistory(filters map[string]string, sort string, limit int, page int) ([]domain.History, error)
 	CreateHistory(history domain.History) (domain.History, error)
 	UpdateHistory(history domain.History) (domain.History, error)
 	CreateHistoryItem(history domain.HistoryItem) (domain.HistoryItem, error)
