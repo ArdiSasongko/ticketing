@@ -28,7 +28,8 @@ func (baseQueryBuilder *BaseQueryBuilderImpl) GetQueryBuilder(filters map[string
 		if !slices.Contains(allowedFilters, filter) {
 			return nil, fmt.Errorf("%s filter is now allowed", filter)
 		}
-		query = query.Where(fmt.Sprintf("%s = ?", filter), value)
+		pat := "%" + value + "%"
+		query = query.Where(fmt.Sprintf("%s ilike ?", filter), pat)
 	}
 
 	if sort != "" {
