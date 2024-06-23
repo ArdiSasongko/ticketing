@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/labstack/echo/v4/middleware"
 	"log"
 	"os"
 
@@ -11,7 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 
-	echoSwagger "github.com/swaggo/echo-swagger"
+	"github.com/swaggo/echo-swagger"
 
 	_ "github.com/ArdiSasongko/ticketing_app/docs" // Import the generated documentation files
 )
@@ -39,21 +40,31 @@ func (cV *CustomValidator) Validate(i interface{}) error {
 // @host localhost:8001
 // @BasePath /
 
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Bearer
+
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("error loading .env file!")
 	}
 
 	r := echo.New()
-	r.Validator = &CustomValidator{validator: validator.New()}
+	r.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.PATCH, echo.DELETE},
+	}))
+
+	r.Validator = helper.NewCustomValidator()
 	r.HTTPErrorHandler = helper.BindAndValidate
 
 	r.GET("/swagger/*", echoSwagger.WrapHandler)
 
+	route.RegisterGeneralRoutes("/general", r)
 	route.RegisterAdminRoute("/admin", r)
 	route.RegisterBuyerRoutes("/buyer", r)
 	route.RegisterSellerRoutes("/seller", r)
 
-	r.Debug = true
 	r.Logger.Fatal(r.Start(fmt.Sprintf(":%s", os.Getenv("PORT"))))
 }
