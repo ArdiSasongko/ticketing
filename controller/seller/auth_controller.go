@@ -3,8 +3,8 @@ package seller_controller
 import "github.com/labstack/echo/v4"
 
 type SellerController interface {
-	SaveSeller(c echo.Context) error
-	LoginSeller(c echo.Context) error
-	GetSeller(c echo.Context) error
-	UpdateSeller(c echo.Context) error
+	Register(c echo.Context) error
+	Login(c echo.Context) error
+	View(c echo.Context) error
+	Update(c echo.Context) error
 }

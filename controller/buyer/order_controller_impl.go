@@ -21,8 +21,23 @@ func NewOrderController(orderService buyer_service.OrderService) *OrderControlle
 	}
 }
 
-func (controller *OrderControllerImpl) ListOrder(c echo.Context) error {
-	histories, err := controller.orderService.ListOrder()
+// List godoc
+// @Summary Order (List)
+// @Description Order (List)
+// @Tags [Buyer] Order
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Token"
+// @Param filters query string false "Filters"
+// @Param sort query string false "Sort"
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 500 {object} helper.ResponseClientModel
+// @Router /buyer/orders [get]
+func (controller *OrderControllerImpl) List(c echo.Context) error {
+	filters, sort, limit, page := helper.ExtractFilterSort(c.QueryParams())
+	histories, err := controller.orderService.ListOrder(filters, sort, limit, page)
 
 	if err != nil {
 		return err
@@ -31,24 +46,44 @@ func (controller *OrderControllerImpl) ListOrder(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "list order success", histories))
 }
 
-func (controller *OrderControllerImpl) ViewOrder(c echo.Context) error {
+// View godoc
+// @Summary Order (View)
+// @Description Order (View)
+// @Tags [Buyer] Order
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 500 {object} helper.ResponseClientModel
+// @Router /buyer/orders/{id} [get]
+func (controller *OrderControllerImpl) View(c echo.Context) error {
 	historyId, _ := strconv.Atoi(c.Param("id"))
 
 	history, err := controller.orderService.ViewOrder(historyId)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "view order success", history))
 }
 
-func (controller *OrderControllerImpl) CreateOrder(c echo.Context) error {
+// Create godoc
+// @Summary Order (Create)
+// @Description Order (Create)
+// @Tags [Buyer] Order
+// @Accept json
+// @Produce json
+// @Param event body buyer_web.CreateOrderRequest true "Create Event Request"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /buyer/orders [post]
+func (controller *OrderControllerImpl) Create(c echo.Context) error {
 	authId, err := helper.GetAuthId(c)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
 
-	input := new(buyer_web.OrderRequest)
+	input := new(buyer_web.CreateOrderRequest)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, model.ResponseToClient(http.StatusBadRequest, err.Error(), nil))
 	}
@@ -75,7 +110,17 @@ func (controller *OrderControllerImpl) CreateOrder(c echo.Context) error {
 	return c.JSON(http.StatusCreated, model.ResponseToClient(http.StatusCreated, "Create Order Success", data))
 }
 
-func (controller *OrderControllerImpl) PayOrder(c echo.Context) error {
+// Pay godoc
+// @Summary Order (Pay)
+// @Description Order (Pay)
+// @Tags [Buyer] Order
+// @Accept json
+// @Produce json
+// @Param id path int true "Event ID"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /buyer/orders/{id}/pay [patch]
+func (controller *OrderControllerImpl) Pay(c echo.Context) error {
 	orderId, _ := strconv.Atoi(c.Param("id"))
 
 	_, err := controller.orderService.PayOrder(orderId)
@@ -86,7 +131,17 @@ func (controller *OrderControllerImpl) PayOrder(c echo.Context) error {
 	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "Pay Order Success", nil))
 }
 
-func (controller *OrderControllerImpl) DeleteOrder(c echo.Context) error {
+// Delete godoc
+// @Summary Order (Delete)
+// @Description Order (Delete)
+// @Tags [Buyer] Order
+// @Accept json
+// @Produce json
+// @Param id path int true "ID"
+// @Success 200 {object} helper.ResponseClientModel
+// @Failure 400 {object} helper.ResponseClientModel
+// @Router /buyer/orders/:id [delete]
+func (controller *OrderControllerImpl) Delete(c echo.Context) error {
 	orderId, _ := strconv.Atoi(c.Param("id"))
 
 	if err := controller.orderService.DeleteOrder(orderId); err != nil {

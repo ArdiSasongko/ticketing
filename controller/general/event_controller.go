@@ -1,4 +1,4 @@
-package buyer_controller
+package general_controller
 
 import "github.com/labstack/echo/v4"
 

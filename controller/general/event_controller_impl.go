@@ -1,29 +1,27 @@
-package buyer_controller
+package general_controller
 
 import (
+	"github.com/ArdiSasongko/ticketing_app/helper"
+	"github.com/ArdiSasongko/ticketing_app/service/general"
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
-
-	"github.com/ArdiSasongko/ticketing_app/helper"
-	"github.com/ArdiSasongko/ticketing_app/model"
-	"github.com/ArdiSasongko/ticketing_app/service/buyer"
-	"github.com/labstack/echo/v4"
 )
 
 type EventControllerImpl struct {
-	eventService buyer_service.EventService
+	eventService general_service.EventService
 }
 
-func NewEventController(service buyer_service.EventService) *EventControllerImpl {
+func NewEventController(eventService general_service.EventService) *EventControllerImpl {
 	return &EventControllerImpl{
-		eventService: service,
+		eventService: eventService,
 	}
 }
 
 // List godoc
 // @Summary Event (List)
 // @Description Event (List)
-// @Tags [Buyer] Event
+// @Tags [General] Event
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
@@ -33,35 +31,37 @@ func NewEventController(service buyer_service.EventService) *EventControllerImpl
 // @Param page query int false "Page"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 500 {object} helper.ResponseClientModel
-// @Router /buyer/events [get]
+// @Router /general/events [get]
 func (controller *EventControllerImpl) List(c echo.Context) error {
 	filters, sort, limit, page := helper.ExtractFilterSort(c.QueryParams())
-	events, err := controller.eventService.GetEventList(filters, sort, limit, page)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, model.ResponseToClient(http.StatusInternalServerError, err.Error(), nil))
+	getEvents, errGetEvents := controller.eventService.GetEventList(filters, sort, limit, page)
+
+	if errGetEvents != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseClient(http.StatusInternalServerError, errGetEvents.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", events))
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", getEvents))
 }
 
 // View godoc
 // @Summary Event (View)
 // @Description Event (View)
-// @Tags [Buyer] Event
+// @Tags [General] Event
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
 // @Param id path int true "id"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 500 {object} helper.ResponseClientModel
-// @Router /buyer/events/{id} [get]
+// @Router /general/events/{id} [get]
 func (controller *EventControllerImpl) View(c echo.Context) error {
 	eventId, _ := strconv.Atoi(c.Param("id"))
 
-	event, getEventErr := controller.eventService.ViewEvent(eventId) // todo: load seller
-	if getEventErr != nil {
-		return c.JSON(http.StatusInternalServerError, model.ResponseToClient(http.StatusInternalServerError, getEventErr.Error(), nil))
+	getEvents, errGetEvents := controller.eventService.GetEvent(eventId)
+
+	if errGetEvents != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseClient(http.StatusInternalServerError, errGetEvents.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, model.ResponseToClient(http.StatusOK, "success", event))
+	return c.JSON(http.StatusOK, helper.ResponseClient(http.StatusOK, "Success", getEvents))
 }
