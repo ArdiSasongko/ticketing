@@ -18,13 +18,13 @@ func BindAndValidate(err error, c echo.Context) {
 		for _, err := range castedObject {
 			switch err.Tag() {
 			case "required":
-				report.Message = fmt.Sprintf("%s field ini wajib diisi", err.Field())
+				report.Message = fmt.Sprintf("%s field is required", err.Field())
 				report.Code = http.StatusBadRequest
 			case "email":
-				report.Message = fmt.Sprintf("%s ini bukan email valid", err.Field())
+				report.Message = fmt.Sprintf("field is not a valid email address")
 				report.Code = http.StatusBadRequest
 			case "event_status_enum":
-				report.Message = fmt.Sprintf("%s tidak valid", err.Field())
+				report.Message = fmt.Sprintf("invalid %s", err.Field())
 				report.Code = http.StatusBadRequest
 			}
 		}
