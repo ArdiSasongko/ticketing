@@ -114,7 +114,6 @@ func (repo *OrderRepositoryImpl) GetActiveHistory(buyerId int) (domain.History, 
 		}
 		return domain.History{}, err
 	}
-	print(history.Number)
 
 	return history, nil
 }
