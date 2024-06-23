@@ -185,6 +185,17 @@ func (service *OrderServiceImpl) PayOrder(orderId int) (buyer_entity.HistoryEnti
 		if updateSellerErr != nil {
 			return buyer_entity.HistoryEntity{}, updateSellerErr
 		}
+
+		for i := 1; i < 5; i++ {
+			ticket := domain.Ticket{}
+			ticket.EventIDFK = event.EventID
+			ticket.BuyerIDFK = history.BuyerIDFK
+			//ticket.Status = string(enum.TicketStatusValid)
+			storeTicketErr := service.orderRepository.CreateTicket(ticket)
+			if storeTicketErr != nil {
+				return buyer_entity.HistoryEntity{}, storeTicketErr
+			}
+		}
 	}
 
 	history.PaymentStatus = string(enum.PaymentStatusPaid)

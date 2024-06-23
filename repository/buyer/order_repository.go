@@ -20,4 +20,5 @@ type OrderRepository interface {
 	GetActiveHistory(buyerId int) (domain.History, error)
 	DeleteHistory(history domain.History) error
 	DeleteHistoryItem(historyItem domain.HistoryItem) error
+	CreateTicket(ticket domain.Ticket) error
 }

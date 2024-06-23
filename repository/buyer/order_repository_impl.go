@@ -128,3 +128,10 @@ func (repo *OrderRepositoryImpl) DeleteHistory(history domain.History) error {
 func (repo *OrderRepositoryImpl) DeleteHistoryItem(historyItem domain.HistoryItem) error {
 	return repo.DB.Delete(&historyItem).Error
 }
+
+func (repo *OrderRepositoryImpl) CreateTicket(ticket domain.Ticket) error {
+	if err := repo.DB.Create(&ticket).Error; err != nil {
+		return err
+	}
+	return nil
+}
