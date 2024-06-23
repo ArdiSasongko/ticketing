@@ -7,7 +7,6 @@ import (
 	"github.com/ArdiSasongko/ticketing_app/middleware"
 	"github.com/ArdiSasongko/ticketing_app/query_builder/buyer"
 	"github.com/ArdiSasongko/ticketing_app/repository/buyer"
-	"github.com/ArdiSasongko/ticketing_app/repository/history"
 	"github.com/ArdiSasongko/ticketing_app/service/buyer"
 	"github.com/labstack/echo/v4"
 )
@@ -20,15 +19,15 @@ import (
 func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	db := app.DBConnection()
 	token := helper.NewTokenUseCase()
-	historyRepo := history_repository.NewHistoryRepoImpl(db)
-	buyerAuthRepo := buyer_repository.NewBuyerRepository(db)
-	buyerAuthService := buyer_service.NewBuyerService(buyerAuthRepo, token, historyRepo)
-	buyerAuthController := buyer_controller.NewBuyerController(buyerAuthService)
+	buyerAuthRepo := buyer_repository.NewAuthRepository(db)
+	buyerAuthService := buyer_service.NewAuthService(buyerAuthRepo, token)
+	buyerAuthController := buyer_controller.NewAuthController(buyerAuthService)
 	buyerEventQB := buyer_query_builder.NewEventQueryBuilder(db)
 	buyerEventRepo := buyer_repository.NewEventRepository(buyerEventQB, db)
 	buyerEventService := buyer_service.NewEventService(buyerEventRepo)
 	buyerEventController := buyer_controller.NewEventController(buyerEventService)
-	buyerOrderRepo := buyer_repository.NewOrderRepository(db)
+	buyerOrderQueryBuilder := buyer_query_builder.NewOrderQueryBuilder(db)
+	buyerOrderRepo := buyer_repository.NewOrderRepository(buyerOrderQueryBuilder, db)
 	buyerSellerRepo := buyer_repository.NewSellerRepository(db)
 	buyerOrderService := buyer_service.NewOrderService(db, buyerOrderRepo, buyerSellerRepo)
 	buyerOrderController := buyer_controller.NewOrderController(buyerOrderService)
@@ -39,18 +38,20 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	authRoute.POST("/register", buyerAuthController.Register)
 	authRoute.POST("/login", buyerAuthController.Login)
 
-	meRoute := g.Group("/me", middleware.JWTProtection())
-	meRoute.GET("", buyerAuthController.ViewMe)
+	g.Use(middleware.JWTProtection(), middleware.IsBuyer)
+
+	meRoute := g.Group("/me")
+	meRoute.GET("", buyerAuthController.View)
 	meRoute.PUT("/update", buyerAuthController.Update)
 
-	eventRoute := g.Group("/events", middleware.JWTProtection())
-	eventRoute.GET("", buyerEventController.GetEventList)
-	eventRoute.GET("/:id", buyerEventController.ViewEvent)
+	eventRoute := g.Group("/events")
+	eventRoute.GET("", buyerEventController.List)
+	eventRoute.GET("/:id", buyerEventController.View)
 
-	orderRoute := g.Group("/orders", middleware.JWTProtection())
-	orderRoute.GET("", buyerOrderController.ListOrder)
-	orderRoute.GET("/:id", buyerOrderController.ViewOrder)
-	orderRoute.POST("", buyerOrderController.CreateOrder)
-	orderRoute.POST("/:id/pay", buyerOrderController.PayOrder)
-	orderRoute.DELETE("/:id", buyerOrderController.DeleteOrder)
+	orderRoute := g.Group("/orders")
+	orderRoute.GET("", buyerOrderController.List)
+	orderRoute.GET("/:id", buyerOrderController.View, middleware.AccessOrder(*buyerOrderRepo))
+	orderRoute.POST("", buyerOrderController.Create)
+	orderRoute.POST("/:id/pay", buyerOrderController.Pay, middleware.AccessOrder(*buyerOrderRepo))
+	orderRoute.DELETE("/:id", buyerOrderController.Delete, middleware.AccessOrder(*buyerOrderRepo))
 }
