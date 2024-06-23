@@ -1,18 +1,18 @@
 package buyer_web
 
-type BuyerRequest struct {
+type RegisterBuyerRequest struct {
 	Name     string `validate:"required" json:"name"`
 	Email    string `validate:"required,email" json:"email"`
 	Password string `validate:"required" json:"password"`
 }
 
-type BuyerLoginRequest struct {
+type LoginBuyerRequest struct {
 	Email    string `validate:"required,email" json:"email"`
 	Password string `validate:"required" json:"password"`
 }
 
-type BuyerUpdateRequest struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+type UpdateBuyerRequest struct {
+	Name     string `validate:"required" json:"name"`
+	Email    string `validate:"required,email" json:"email"`
+	Password string `validate:"required" json:"password"`
 }
