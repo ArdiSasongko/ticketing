@@ -2,8 +2,8 @@ package domain
 
 import "time"
 
-type Admins struct {
-	AdminID   int    `gorm:"column:id;primaryKey;autoIncrement"`
+type Admin struct {
+	ID        int    `gorm:"column:id;primaryKey;autoIncrement"`
 	Name      string `gorm:"column:name"`
 	Email     string `gorm:"column:email"`
 	Password  string `gorm:"column:password"`
@@ -11,6 +11,6 @@ type Admins struct {
 	UpdatedAt time.Time
 }
 
-func (Admins) TableName() string {
+func (Admin) TableName() string {
 	return "admin"
 }

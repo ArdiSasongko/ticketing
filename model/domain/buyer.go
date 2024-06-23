@@ -2,7 +2,7 @@ package domain
 
 import "time"
 
-type Buyers struct {
+type Buyer struct {
 	BuyerID   int    `gorm:"column:id;primaryKey;autoIncrement"`
 	Name      string `gorm:"column:name"`
 	Email     string `gorm:"column:email"`
@@ -11,6 +11,6 @@ type Buyers struct {
 	UpdatedAt time.Time
 }
 
-func (Buyers) TableName() string {
+func (Buyer) TableName() string {
 	return "buyer"
 }

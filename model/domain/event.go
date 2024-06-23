@@ -3,7 +3,7 @@ package domain
 import "time"
 
 type Event struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement"` // todo
+	EventID   int       `gorm:"column:id;primaryKey;autoIncrement"` // todo
 	SellerID  int       `gorm:"column:seller_id"`
 	Name      string    `gorm:"column:name"`
 	Date      time.Time `gorm:"column:date"`
