@@ -6,13 +6,13 @@ import (
 )
 
 type HistoryLiteEntity struct {
-	Id            int       `json:"id"`
-	Number        string    `json:"number"`
-	PaymentStatus string    `json:"payment_status"`
-	Total         float64   `json:"total"`
-	PaidAt        time.Time `json:"paid_at"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	Id            int        `json:"id"`
+	Number        string     `json:"number"`
+	PaymentStatus string     `json:"payment_status"`
+	Total         float64    `json:"total"`
+	PaidAt        *time.Time `json:"paid_at"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
 }
 
 func ToHistoryLiteEntity(history domain.History) HistoryLiteEntity {
@@ -21,7 +21,7 @@ func ToHistoryLiteEntity(history domain.History) HistoryLiteEntity {
 		Number:        history.Number,
 		PaymentStatus: history.PaymentStatus,
 		Total:         history.Total,
-		PaidAt:        *history.PaidAt,
+		PaidAt:        history.PaidAt,
 		CreatedAt:     history.CreatedAt,
 		UpdatedAt:     history.UpdatedAt,
 	}
