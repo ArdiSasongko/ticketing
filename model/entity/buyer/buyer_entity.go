@@ -8,7 +8,7 @@ type BuyerEntity struct {
 	Email string `json:"email"`
 }
 
-func ToBuyerEntity(buyer domain.Buyers) BuyerEntity {
+func ToBuyerEntity(buyer domain.Buyer) BuyerEntity {
 	return BuyerEntity{
 		ID:    buyer.BuyerID,
 		Name:  buyer.Name,
@@ -16,7 +16,7 @@ func ToBuyerEntity(buyer domain.Buyers) BuyerEntity {
 	}
 }
 
-func ToBuyerEntities(buyers []domain.Buyers) []BuyerEntity {
+func ToBuyerEntities(buyers []domain.Buyer) []BuyerEntity {
 	var result []BuyerEntity
 	for _, buyer := range buyers {
 		result = append(result, ToBuyerEntity(buyer))

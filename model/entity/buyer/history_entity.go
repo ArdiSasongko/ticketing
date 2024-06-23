@@ -11,7 +11,7 @@ type HistoryEntity struct {
 	Number              string              `json:"number"`
 	PaymentStatus       string              `json:"payment_status"`
 	Total               float64             `json:"total"`
-	PaidAt              time.Time           `json:"paid_at"`
+	PaidAt              *time.Time          `json:"paid_at"`
 	CreatedAt           time.Time           `json:"created_at"`
 	UpdatedAt           time.Time           `json:"updated_at"`
 	HistoryItemEntities []HistoryItemEntity `json:"history_items"`

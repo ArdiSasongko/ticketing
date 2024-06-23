@@ -7,18 +7,18 @@ import (
 )
 
 type HistoryEntity struct {
-	ID            int       `json:"id"`
-	BuyyerIDFK    int       `json:"buyer_id"`
-	Number        string    `json:"number"`
-	PaymentStatus string    `json:"payment_status"`
-	Total         float64   `json:"total"`
-	PaidAt        time.Time `json:"paid_at"`
+	ID            int        `json:"id"`
+	BuyerIDFK     int        `json:"buyer_id"`
+	Number        string     `json:"number"`
+	PaymentStatus string     `json:"payment_status"`
+	Total         float64    `json:"total"`
+	PaidAt        *time.Time `json:"paid_at"`
 }
 
 func ToHistoryEntity(history domain.History) HistoryEntity {
 	return HistoryEntity{
 		ID:            history.Id,
-		BuyyerIDFK:    history.BuyyerIDFK,
+		BuyerIDFK:     history.BuyerIDFK,
 		Number:        history.Number,
 		PaymentStatus: history.PaymentStatus,
 		Total:         history.Total,

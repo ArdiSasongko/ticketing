@@ -6,19 +6,20 @@ import (
 )
 
 type EventEntity struct {
-	EventID  int       `json:"id"`
-	Name     string    `json:"name"`
-	Date     time.Time `json:"date"`
-	Location string    `json:"location"`
-	Qty      int       `json:"qty"`
-	Category string    `json:"category"`
-	Price    float64   `json:"price"`
-	Status   string    `json:"status"`
+	EventID  int          `json:"id"`
+	Name     string       `json:"name"`
+	Date     time.Time    `json:"date"`
+	Location string       `json:"location"`
+	Qty      int          `json:"qty"`
+	Category string       `json:"category"`
+	Price    float64      `json:"price"`
+	Status   string       `json:"status"`
+	Seller   SellerEntity `json:"seller"`
 }
 
 func ToEventEntity(event domain.Event) EventEntity {
 	return EventEntity{
-		EventID:  event.ID,
+		EventID:  event.EventID,
 		Name:     event.Name,
 		Date:     event.Date,
 		Location: event.Location,
@@ -26,6 +27,7 @@ func ToEventEntity(event domain.Event) EventEntity {
 		Category: event.Category,
 		Price:    event.Price,
 		Status:   event.Status,
+		Seller:   ToSellerEntity(event.Seller),
 	}
 }
 

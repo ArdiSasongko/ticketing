@@ -21,7 +21,7 @@ func ToHistoryLiteEntity(history domain.History) HistoryLiteEntity {
 		Number:        history.Number,
 		PaymentStatus: history.PaymentStatus,
 		Total:         history.Total,
-		PaidAt:        history.PaidAt,
+		PaidAt:        *history.PaidAt,
 		CreatedAt:     history.CreatedAt,
 		UpdatedAt:     history.UpdatedAt,
 	}

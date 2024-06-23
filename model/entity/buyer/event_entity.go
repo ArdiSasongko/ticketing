@@ -23,7 +23,7 @@ type EventEntity struct {
 
 func ToEventEntity(event domain.Event) EventEntity {
 	return EventEntity{
-		ID:        event.ID,
+		ID:        event.EventID,
 		Name:      event.Name,
 		Date:      event.Date,
 		Location:  event.Location,
