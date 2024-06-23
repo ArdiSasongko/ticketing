@@ -31,6 +31,10 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	buyerSellerRepo := buyer_repository.NewSellerRepository(db)
 	buyerOrderService := buyer_service.NewOrderService(db, buyerOrderRepo, buyerSellerRepo)
 	buyerOrderController := buyer_controller.NewOrderController(buyerOrderService)
+	buyerTicketQueryBuilder := buyer_query_builder.NewTicketQueryBuilder(db)
+	buyerTicketRepository := buyer_repository.NewTicketRepository(buyerTicketQueryBuilder, db)
+	buyerTicketService := buyer_service.NewTicketService(buyerTicketRepository)
+	buyerTicketController := buyer_controller.NewTicketController(buyerTicketService)
 
 	g := e.Group(prefix)
 
@@ -52,6 +56,10 @@ func RegisterBuyerRoutes(prefix string, e *echo.Echo) {
 	orderRoute.GET("", buyerOrderController.List)
 	orderRoute.GET("/:id", buyerOrderController.View, middleware.AccessOrder(*buyerOrderRepo))
 	orderRoute.POST("", buyerOrderController.Create)
-	orderRoute.POST("/:id/pay", buyerOrderController.Pay, middleware.AccessOrder(*buyerOrderRepo))
+	orderRoute.PATCH("/:id/pay", buyerOrderController.Pay, middleware.AccessOrder(*buyerOrderRepo))
 	orderRoute.DELETE("/:id", buyerOrderController.Delete, middleware.AccessOrder(*buyerOrderRepo))
+
+	ticketRoute := g.Group("/tickets")
+	ticketRoute.GET("", buyerTicketController.List)
+	ticketRoute.GET("/:id", buyerTicketController.View, middleware.AccessTicket(*buyerTicketRepository))
 }

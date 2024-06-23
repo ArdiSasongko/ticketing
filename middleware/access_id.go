@@ -59,3 +59,28 @@ func AccessOrder(repo buyer_repository.OrderRepositoryImpl) echo.MiddlewareFunc 
 		}
 	}
 }
+
+func AccessTicket(repo buyer_repository.TicketRepositoryImpl) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			id, err := strconv.Atoi(c.Param("id"))
+
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
+			}
+
+			ticker, err := repo.GetTicket(id)
+
+			if err != nil {
+				return c.JSON(http.StatusNotFound, helper.ResponseClient(http.StatusNotFound, err.Error(), nil))
+			}
+
+			userID, _ := helper.GetAuthId(c)
+			if ticker.BuyerIDFK != userID {
+				return c.JSON(http.StatusForbidden, helper.ResponseClient(http.StatusForbidden, "You are not authorized to access this ticket", nil))
+			}
+
+			return next(c)
+		}
+	}
+}

@@ -5,16 +5,13 @@ import (
 )
 
 type Ticket struct {
-	Id        int       `gorm:"column:id"`
-	EventIDFK int       `gorm:"column:event_id"`
-	BuyerIDFK int       `gorm:"column:buyer_id"`
-	Date      time.Time `gorm:"column:date"`
-	Location  string    `gorm:"column:location"`
-	Qty       int       `gorm:"column:qty"`
-	Price     float64   `gorm:"column:price"`
-	Status    string    `gorm:"column:status;default:'Valid';check:status IN ('Valid', 'Used', 'Expired')"`
+	Id        int    `gorm:"column:id"`
+	EventIDFK int    `gorm:"column:event_id"`
+	BuyerIDFK int    `gorm:"column:buyer_id"`
+	Status    string `gorm:"column:status;default:'valid';check:status IN ('valid', 'used', 'expired')"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	Event     Event
 }
 
 func (Ticket) TableName() string {

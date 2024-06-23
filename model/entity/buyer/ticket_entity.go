@@ -7,39 +7,31 @@ import (
 )
 
 type TicketEntity struct {
-	Id        int       `json:"id"`
-	EventIDFK int       `json:"event_id"`
-	BuyerIDFK int       `json:"buyer_id"`
-	Date      time.Time `json:"date"`
-	Location  string    `json:"location"`
-	Qty       int       `json:"qty"`
-	Price     float64   `json:"price"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id        int         `json:"id"`
+	BuyerIDFK int         `json:"buyer_id"`
+	Status    string      `json:"status"`
+	CreatedAt time.Time   `json:"created_at"`
+	UpdatedAt time.Time   `json:"updated_at"`
+	Event     EventEntity `json:"event"`
 }
 
 func ToTicketEntity(ticket domain.Ticket) TicketEntity {
 	return TicketEntity{
 		Id:        ticket.Id,
 		BuyerIDFK: ticket.BuyerIDFK,
-		Date:      ticket.Date,
-		Location:  ticket.Location,
-		Qty:       ticket.Qty,
+		Status:    ticket.Status,
 		CreatedAt: ticket.CreatedAt,
 		UpdatedAt: ticket.UpdatedAt,
+		Event:     ToEventEntity(ticket.Event),
 	}
 }
 
-//func GenerateTicket(ticket []domain.Ticket) []TicketEntity {
-//	ticketData := []TicketEntity{}
-//	historyItemData := []HistoryItemEntity{}
-//	for _, source := range historyItemData {
-//		ticketData = append(ticketData, TicketEntity{
-//
-//			EventIDFK: source.EventIDFK,
-//			Qty:       source.Qty,
-//			Price:     source.Subtotal,
-//		})
-//	}
-//	return ticketData
-//}
+func ToTicketListEntity(tickets []domain.Ticket) []TicketEntity {
+	var ticketList []TicketEntity
+
+	for _, ticket := range tickets {
+		ticketList = append(ticketList, ToTicketEntity(ticket))
+	}
+
+	return ticketList
+}
