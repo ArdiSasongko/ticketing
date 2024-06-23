@@ -1,17 +1,10 @@
 package admin_service
 
 import (
-	"github.com/ArdiSasongko/ticketing_app/helper"
-	buyer_entity "github.com/ArdiSasongko/ticketing_app/model/entity/buyer"
-	seller_entity "github.com/ArdiSasongko/ticketing_app/model/entity/seller"
-	admin_web "github.com/ArdiSasongko/ticketing_app/model/web/admin"
+	"github.com/ArdiSasongko/ticketing_app/model/entity/admin"
 )
 
-type AdminServiceInterface interface {
-	Register(req admin_web.AdminRequest) (helper.CustomResponse, error)
-	Login(email, password string) (helper.CustomResponse, error)
-	GetBuyers() ([]buyer_entity.BuyerEntity, error)
-	GetSellers() ([]seller_entity.SellerEntity, error)
-	GetBuyerByID(buyerID int) (buyer_entity.BuyerEntity, error)
-	GetSellerByID(sellerID int) (seller_entity.SellerEntity, error)
+type AdminService interface {
+	GetAdmins(filters map[string]string, sort string, limit int, page int) ([]admin_entity.AdminEntity, error)
+	GetAdminByID(adminId int) (admin_entity.AdminEntity, error)
 }

@@ -9,20 +9,20 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type AdminControllerImpl struct {
-	adminService admin_service.AdminService
+type BuyerControllerImpl struct {
+	buyerService admin_service.BuyerService
 }
 
-func NewAdminController(adminService admin_service.AdminService) *AdminControllerImpl {
-	return &AdminControllerImpl{
-		adminService: adminService,
+func NewBuyerController(buyerService admin_service.BuyerService) *BuyerControllerImpl {
+	return &BuyerControllerImpl{
+		buyerService: buyerService,
 	}
 }
 
 // List godoc
-// @Summary Admin (List)
-// @Description Admin (List)
-// @Tags [Admin] Admin
+// @Summary Buyer (List)
+// @Description Buyer (List)
+// @Tags [Admin] Buyer
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
@@ -32,10 +32,10 @@ func NewAdminController(adminService admin_service.AdminService) *AdminControlle
 // @Param page query int false "Page"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /admin/admins [get]
-func (controller *AdminControllerImpl) List(c echo.Context) error {
+// @Router /admin/buyers [get]
+func (controller *BuyerControllerImpl) List(c echo.Context) error {
 	filters, sort, limit, page := helper.ExtractFilterSort(c.QueryParams())
-	result, err := controller.adminService.GetAdmins(filters, sort, limit, page)
+	result, err := controller.buyerService.GetBuyers(filters, sort, limit, page)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
 	}
@@ -44,19 +44,19 @@ func (controller *AdminControllerImpl) List(c echo.Context) error {
 }
 
 // View godoc
-// @Summary Admin (View)
-// @Description Admin (View)
-// @Tags [Admin] Admin
+// @Summary Buyer (View)
+// @Description Buyer (View)
+// @Tags [Admin] Buyer
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
-// @Router /admin/admins/{id} [get]
-func (controller *AdminControllerImpl) View(c echo.Context) error {
-	adminId, _ := strconv.Atoi(c.Param("id"))
+// @Router /admin/buyers/{id} [get]
+func (controller *BuyerControllerImpl) View(c echo.Context) error {
+	buyerID, _ := strconv.Atoi(c.Param("id"))
 
-	result, err := controller.adminService.GetAdminByID(adminId)
+	result, err := controller.buyerService.GetBuyerByID(buyerID)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseClient(http.StatusBadRequest, err.Error(), nil))
