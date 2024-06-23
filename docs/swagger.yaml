@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  buyer_web.BuyerLoginRequest:
+  admin_web.LoginAdminRequest:
     properties:
       email:
         type: string
@@ -10,7 +10,7 @@ definitions:
     - email
     - password
     type: object
-  buyer_web.BuyerRequest:
+  admin_web.RegisterAdminRequest:
     properties:
       email:
         type: string
@@ -23,7 +23,27 @@ definitions:
     - name
     - password
     type: object
-  buyer_web.BuyerUpdateRequest:
+  buyer_web.CreateOrderRequest:
+    properties:
+      event_id:
+        type: integer
+      qty:
+        type: integer
+    required:
+    - event_id
+    - qty
+    type: object
+  buyer_web.LoginBuyerRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  buyer_web.RegisterBuyerRequest:
     properties:
       email:
         type: string
@@ -31,6 +51,23 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  buyer_web.UpdateBuyerRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
     type: object
   helper.ResponseClientModel:
     properties:
@@ -40,7 +77,7 @@ definitions:
       message:
         type: string
     type: object
-  seller_web.CreateEventsRequest:
+  seller_web.CreateEventRequest:
     properties:
       category:
         type: string
@@ -65,16 +102,17 @@ definitions:
     - qty
     - seller_id
     type: object
-  seller_web.SellerLoginRequest:
+  seller_web.LoginSellerRequest:
     properties:
       email:
         type: string
       password:
         type: string
     required:
+    - email
     - password
     type: object
-  seller_web.SellerServiceRequest:
+  seller_web.RegisterSellerRequest:
     properties:
       email:
         type: string
@@ -87,17 +125,7 @@ definitions:
     - name
     - password
     type: object
-  seller_web.SellerUpdateServiceRequest:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-    required:
-    - email
-    - name
-    type: object
-  seller_web.UserUpdateServiceRequest:
+  seller_web.UpdateEventRequest:
     properties:
       category:
         type: string
@@ -120,7 +148,26 @@ definitions:
     - name
     - price
     - qty
-    - seller_id
+    type: object
+  seller_web.UpdateEventStatusRequest:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
+  seller_web.UpdateSellerRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
     type: object
 host: localhost:8001
 info:
@@ -136,18 +183,33 @@ info:
   title: Ticketing API
   version: "1.0"
 paths:
-  /buyer/auth/login:
-    post:
+  /admin/admins:
+    get:
       consumes:
       - application/json
-      description: Login a buyer with email and password
+      description: Admin (List)
       parameters:
-      - description: Login details
-        in: body
-        name: buyer
+      - description: Token
+        in: header
+        name: Authorization
         required: true
-        schema:
-          $ref: '#/definitions/buyer_web.BuyerLoginRequest'
+        type: string
+      - description: Filters
+        in: query
+        name: filters
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
       produces:
       - application/json
       responses:
@@ -159,21 +221,294 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Login a buyer
+      summary: Admin (List)
       tags:
-      - buyer
+      - '[Admin] Admin'
+  /admin/admins/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Admin (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Admin (View)
+      tags:
+      - '[Admin] Admin'
+  /admin/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Auth (Login)
+      parameters:
+      - description: Login Admin Request
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/admin_web.LoginAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Auth (Login)
+      tags:
+      - '[Admin] Auth'
+  /admin/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Auth (Register)
+      parameters:
+      - description: Register Admin Request
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/admin_web.RegisterAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Auth (Register)
+      tags:
+      - '[Admin] Auth'
+  /admin/buyers:
+    get:
+      consumes:
+      - application/json
+      description: Buyer (List)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filters
+        in: query
+        name: filters
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Buyer (List)
+      tags:
+      - '[Admin] Buyer'
+  /admin/buyers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Buyer (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Buyer (View)
+      tags:
+      - '[Admin] Buyer'
+  /admin/me:
+    get:
+      consumes:
+      - application/json
+      description: Me (View)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Me (View)
+      tags:
+      - '[Admin] Me'
+  /admin/me/update:
+    put:
+      consumes:
+      - application/json
+      description: Me (Update)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Me (Update)
+      tags:
+      - '[Admin] Me'
+  /admin/sellers:
+    get:
+      consumes:
+      - application/json
+      description: Seller (List)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filters
+        in: query
+        name: filters
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Seller (List)
+      tags:
+      - '[Admin] Seller'
+  /admin/sellers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Seller (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Seller (View)
+      tags:
+      - '[Admin] Seller'
+  /buyer/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Auth (Login)
+      parameters:
+      - description: Login Buyer Request
+        in: body
+        name: buyer
+        required: true
+        schema:
+          $ref: '#/definitions/buyer_web.LoginBuyerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Auth (Login)
+      tags:
+      - '[Buyer] Auth'
   /buyer/auth/register:
     post:
       consumes:
       - application/json
-      description: Register a new buyer with the given details
+      description: Auth (Register)
       parameters:
       - description: Buyer details
         in: body
         name: buyer
         required: true
         schema:
-          $ref: '#/definitions/buyer_web.BuyerRequest'
+          $ref: '#/definitions/buyer_web.RegisterBuyerRequest'
       produces:
       - application/json
       responses:
@@ -185,28 +520,33 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Register a new buyer
+      summary: Auth (Register)
       tags:
-      - buyer
+      - '[Buyer] Auth'
   /buyer/events:
     get:
       consumes:
       - application/json
-      description: Get list of events with optional filters and sorting
+      description: Event (List)
       parameters:
-      - description: Filters for events
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filters
         in: query
         name: filters
         type: string
-      - description: Sort order
+      - description: Sort
         in: query
         name: sort
         type: string
-      - description: Limit number of events
+      - description: Limit
         in: query
         name: limit
         type: integer
-      - description: Page number
+      - description: Page
         in: query
         name: page
         type: integer
@@ -221,14 +561,50 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Get list of events
+      summary: Event (List)
       tags:
-      - buyer
-  /buyer/me/buyers:
+      - '[Buyer] Event'
+  /buyer/events/{id}:
     get:
       consumes:
       - application/json
-      description: Get a list of all buyers
+      description: Event (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (View)
+      tags:
+      - '[Buyer] Event'
+  /buyer/me:
+    get:
+      consumes:
+      - application/json
+      description: Me (View)
+      parameters:
+      - description: Buyer ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -240,33 +616,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Get all buyers
+      summary: Me (View)
       tags:
-      - buyer
-  /buyer/me/history:
-    get:
-      consumes:
-      - application/json
-      description: Get the purchase history of the logged-in buyer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helper.ResponseClientModel'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Get buyer's purchase history
-      tags:
-      - buyer
+      - '[Buyer] Me'
   /buyer/me/update:
     put:
       consumes:
       - application/json
-      description: Update a buyer's information by ID
+      description: Me (Update)
       parameters:
       - description: Buyer ID
         in: path
@@ -278,7 +635,7 @@ paths:
         name: buyer
         required: true
         schema:
-          $ref: '#/definitions/buyer_web.BuyerUpdateRequest'
+          $ref: '#/definitions/buyer_web.UpdateBuyerRequest'
       produces:
       - application/json
       responses:
@@ -290,21 +647,233 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Update a buyer's information
+      summary: Me (Update)
       tags:
-      - buyer
+      - '[Buyer] Me'
+  /buyer/orders:
+    get:
+      consumes:
+      - application/json
+      description: Order (List)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filters
+        in: query
+        name: filters
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Order (List)
+      tags:
+      - '[Buyer] Order'
+    post:
+      consumes:
+      - application/json
+      description: Order (Create)
+      parameters:
+      - description: Create Event Request
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/buyer_web.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Order (Create)
+      tags:
+      - '[Buyer] Order'
+  /buyer/orders/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Order (Delete)
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Order (Delete)
+      tags:
+      - '[Buyer] Order'
+  /buyer/orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Order (View)
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Order (View)
+      tags:
+      - '[Buyer] Order'
+  /buyer/orders/{id}/pay:
+    patch:
+      consumes:
+      - application/json
+      description: Order (Pay)
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Order (Pay)
+      tags:
+      - '[Buyer] Order'
+  /general/events:
+    get:
+      consumes:
+      - application/json
+      description: Event (List)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filters
+        in: query
+        name: filters
+        type: string
+      - description: Sort
+        in: query
+        name: sort
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (List)
+      tags:
+      - '[General] Event'
+  /general/events/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Event (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (View)
+      tags:
+      - '[General] Event'
   /seller/auth/login:
     post:
       consumes:
       - application/json
-      description: Login with the input payload
+      description: Auth (Login)
       parameters:
       - description: Login Seller Request
         in: body
         name: seller
         required: true
         schema:
-          $ref: '#/definitions/seller_web.SellerLoginRequest'
+          $ref: '#/definitions/seller_web.LoginSellerRequest'
       produces:
       - application/json
       responses:
@@ -316,21 +885,21 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Login a seller
+      summary: Auth (Login)
       tags:
-      - seller
+      - '[Seller] Auth'
   /seller/auth/register:
     post:
       consumes:
       - application/json
-      description: Create a new seller with the input payload
+      description: Auth (Register)
       parameters:
-      - description: Create Seller Request
+      - description: Register Seller Request
         in: body
         name: seller
         required: true
         schema:
-          $ref: '#/definitions/seller_web.SellerServiceRequest'
+          $ref: '#/definitions/seller_web.RegisterSellerRequest'
       produces:
       - application/json
       responses:
@@ -342,34 +911,38 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Create a new seller
+      summary: Auth (Register)
       tags:
-      - seller
+      - '[Seller] Auth'
   /seller/events:
     get:
       consumes:
       - application/json
-      description: Get list of events based on seller ID with optional filters, sorting,
-        pagination
+      description: Event (List)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Seller ID
         in: query
         name: seller_id
         required: true
         type: integer
-      - description: Filters for events (e.g., name=EventName)
+      - description: Filters
         in: query
         name: filters
         type: string
-      - description: Sort order for events (e.g., +date or -name)
+      - description: Sort
         in: query
         name: sort
         type: string
-      - description: Limit number of events per page
+      - description: Limit
         in: query
         name: limit
         type: integer
-      - description: Page number
+      - description: Page
         in: query
         name: page
         type: integer
@@ -384,20 +957,25 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Get list of events for a seller
+      summary: Event (List)
       tags:
-      - seller
+      - '[Seller] Event'
     post:
       consumes:
       - application/json
-      description: Create a new event with the input payload
+      description: Event (Create)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Create Event Request
         in: body
         name: event
         required: true
         schema:
-          $ref: '#/definitions/seller_web.CreateEventsRequest'
+          $ref: '#/definitions/seller_web.CreateEventRequest'
       produces:
       - application/json
       responses:
@@ -409,15 +987,115 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Create a new event
+      summary: Event (Create)
       tags:
-      - seller
-  /seller/events/{id}:
+      - '[Seller] Event'
+  /seller/events/:event_id/tickets/:ticket_id/check-in:
     put:
       consumes:
       - application/json
-      description: Update an event by its ID
+      description: (Check In Ticket)
       parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Ticket ID
+        in: path
+        name: ticket_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (Check In Ticket)
+      tags:
+      - '[Seller] Event'
+  /seller/events/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Event (Delete)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (Delete)
+      tags:
+      - '[Seller] Event'
+  /seller/events/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Event (View)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Create Event Request
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.CreateEventRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (View)
+      tags:
+      - '[Seller] Event'
+    put:
+      consumes:
+      - application/json
+      description: Event (Update)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Event ID
         in: path
         name: id
@@ -428,7 +1106,7 @@ paths:
         name: event
         required: true
         schema:
-          $ref: '#/definitions/seller_web.UserUpdateServiceRequest'
+          $ref: '#/definitions/seller_web.UpdateEventRequest'
       produces:
       - application/json
       responses:
@@ -440,14 +1118,50 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Update an event
+      summary: Event (Update)
       tags:
-      - seller
+      - '[Seller] Event'
+  /seller/events/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Event (Update Status)
+      parameters:
+      - description: Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Event Request
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/seller_web.UpdateEventStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ResponseClientModel'
+      summary: Event (Update Status)
+      tags:
+      - '[Seller] Event'
   /seller/me:
     get:
       consumes:
       - application/json
-      description: Get seller information based on seller ID
+      description: Me (View)
       parameters:
       - description: Seller ID
         in: path
@@ -465,14 +1179,14 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Get seller information by ID
+      summary: Me (View)
       tags:
-      - seller
+      - '[Seller] Me'
   /seller/me/update:
     put:
       consumes:
       - application/json
-      description: Update a seller by its ID
+      description: Me (Update)
       parameters:
       - description: Seller ID
         in: path
@@ -484,7 +1198,7 @@ paths:
         name: seller
         required: true
         schema:
-          $ref: '#/definitions/seller_web.SellerUpdateServiceRequest'
+          $ref: '#/definitions/seller_web.UpdateSellerRequest'
       produces:
       - application/json
       responses:
@@ -496,7 +1210,12 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/helper.ResponseClientModel'
-      summary: Update a seller
+      summary: Me (Update)
       tags:
-      - seller
+      - '[Seller] Me'
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Bearer
+    type: apiKey
 swagger: "2.0"

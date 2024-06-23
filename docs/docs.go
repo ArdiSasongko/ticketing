@@ -24,9 +24,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/buyer/auth/login": {
-            "post": {
-                "description": "Login a buyer with email and password",
+        "/admin/admins": {
+            "get": {
+                "description": "Admin (List)",
                 "consumes": [
                     "application/json"
                 ],
@@ -34,17 +34,455 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "buyer"
+                    "[Admin] Admin"
                 ],
-                "summary": "Login a buyer",
+                "summary": "Admin (List)",
                 "parameters": [
                     {
-                        "description": "Login details",
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filters",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/admins/{id}": {
+            "get": {
+                "description": "Admin (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Admin"
+                ],
+                "summary": "Admin (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/auth/login": {
+            "post": {
+                "description": "Auth (Login)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Auth"
+                ],
+                "summary": "Auth (Login)",
+                "parameters": [
+                    {
+                        "description": "Login Admin Request",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_web.LoginAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/auth/register": {
+            "post": {
+                "description": "Auth (Register)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Auth"
+                ],
+                "summary": "Auth (Register)",
+                "parameters": [
+                    {
+                        "description": "Register Admin Request",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_web.RegisterAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/buyers": {
+            "get": {
+                "description": "Buyer (List)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Buyer"
+                ],
+                "summary": "Buyer (List)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filters",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/buyers/{id}": {
+            "get": {
+                "description": "Buyer (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Buyer"
+                ],
+                "summary": "Buyer (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/me": {
+            "get": {
+                "description": "Me (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Me"
+                ],
+                "summary": "Me (View)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/me/update": {
+            "put": {
+                "description": "Me (Update)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Me"
+                ],
+                "summary": "Me (Update)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/sellers": {
+            "get": {
+                "description": "Seller (List)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Seller"
+                ],
+                "summary": "Seller (List)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filters",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/sellers/{id}": {
+            "get": {
+                "description": "Seller (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Admin] Seller"
+                ],
+                "summary": "Seller (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/buyer/auth/login": {
+            "post": {
+                "description": "Auth (Login)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Auth"
+                ],
+                "summary": "Auth (Login)",
+                "parameters": [
+                    {
+                        "description": "Login Buyer Request",
                         "name": "buyer",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/buyer_web.BuyerLoginRequest"
+                            "$ref": "#/definitions/buyer_web.LoginBuyerRequest"
                         }
                     }
                 ],
@@ -66,7 +504,7 @@ const docTemplate = `{
         },
         "/buyer/auth/register": {
             "post": {
-                "description": "Register a new buyer with the given details",
+                "description": "Auth (Register)",
                 "consumes": [
                     "application/json"
                 ],
@@ -74,9 +512,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "buyer"
+                    "[Buyer] Auth"
                 ],
-                "summary": "Register a new buyer",
+                "summary": "Auth (Register)",
                 "parameters": [
                     {
                         "description": "Buyer details",
@@ -84,7 +522,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/buyer_web.BuyerRequest"
+                            "$ref": "#/definitions/buyer_web.RegisterBuyerRequest"
                         }
                     }
                 ],
@@ -106,7 +544,7 @@ const docTemplate = `{
         },
         "/buyer/events": {
             "get": {
-                "description": "Get list of events with optional filters and sorting",
+                "description": "Event (List)",
                 "consumes": [
                     "application/json"
                 ],
@@ -114,31 +552,38 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "buyer"
+                    "[Buyer] Event"
                 ],
-                "summary": "Get list of events",
+                "summary": "Event (List)",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Filters for events",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filters",
                         "name": "filters",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Sort order",
+                        "description": "Sort",
                         "name": "sort",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Limit number of events",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Page number",
+                        "description": "Page",
                         "name": "page",
                         "in": "query"
                     }
@@ -159,9 +604,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/buyer/me/buyers": {
+        "/buyer/events/{id}": {
             "get": {
-                "description": "Get a list of all buyers",
+                "description": "Event (View)",
                 "consumes": [
                     "application/json"
                 ],
@@ -169,9 +614,25 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "buyer"
+                    "[Buyer] Event"
                 ],
-                "summary": "Get all buyers",
+                "summary": "Event (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -179,8 +640,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/helper.ResponseClientModel"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/helper.ResponseClientModel"
                         }
@@ -188,9 +649,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/buyer/me/history": {
+        "/buyer/me": {
             "get": {
-                "description": "Get the purchase history of the logged-in buyer",
+                "description": "Me (View)",
                 "consumes": [
                     "application/json"
                 ],
@@ -198,9 +659,18 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "buyer"
+                    "[Buyer] Me"
                 ],
-                "summary": "Get buyer's purchase history",
+                "summary": "Me (View)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Buyer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -219,7 +689,7 @@ const docTemplate = `{
         },
         "/buyer/me/update": {
             "put": {
-                "description": "Update a buyer's information by ID",
+                "description": "Me (Update)",
                 "consumes": [
                     "application/json"
                 ],
@@ -227,9 +697,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "buyer"
+                    "[Buyer] Me"
                 ],
-                "summary": "Update a buyer's information",
+                "summary": "Me (Update)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -244,7 +714,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/buyer_web.BuyerUpdateRequest"
+                            "$ref": "#/definitions/buyer_web.UpdateBuyerRequest"
                         }
                     }
                 ],
@@ -264,9 +734,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/seller/auth/login": {
-            "post": {
-                "description": "Login with the input payload",
+        "/buyer/orders": {
+            "get": {
+                "description": "Order (List)",
                 "consumes": [
                     "application/json"
                 ],
@@ -274,9 +744,330 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Buyer] Order"
                 ],
-                "summary": "Login a seller",
+                "summary": "Order (List)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filters",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Order (Create)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Order"
+                ],
+                "summary": "Order (Create)",
+                "parameters": [
+                    {
+                        "description": "Create Event Request",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/buyer_web.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/buyer/orders/:id": {
+            "delete": {
+                "description": "Order (Delete)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Order"
+                ],
+                "summary": "Order (Delete)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/buyer/orders/{id}": {
+            "get": {
+                "description": "Order (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Order"
+                ],
+                "summary": "Order (View)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/buyer/orders/{id}/pay": {
+            "patch": {
+                "description": "Order (Pay)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Buyer] Order"
+                ],
+                "summary": "Order (Pay)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/general/events": {
+            "get": {
+                "description": "Event (List)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[General] Event"
+                ],
+                "summary": "Event (List)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filters",
+                        "name": "filters",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/general/events/{id}": {
+            "get": {
+                "description": "Event (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[General] Event"
+                ],
+                "summary": "Event (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/seller/auth/login": {
+            "post": {
+                "description": "Auth (Login)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Seller] Auth"
+                ],
+                "summary": "Auth (Login)",
                 "parameters": [
                     {
                         "description": "Login Seller Request",
@@ -284,7 +1075,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/seller_web.SellerLoginRequest"
+                            "$ref": "#/definitions/seller_web.LoginSellerRequest"
                         }
                     }
                 ],
@@ -306,7 +1097,7 @@ const docTemplate = `{
         },
         "/seller/auth/register": {
             "post": {
-                "description": "Create a new seller with the input payload",
+                "description": "Auth (Register)",
                 "consumes": [
                     "application/json"
                 ],
@@ -314,17 +1105,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Seller] Auth"
                 ],
-                "summary": "Create a new seller",
+                "summary": "Auth (Register)",
                 "parameters": [
                     {
-                        "description": "Create Seller Request",
+                        "description": "Register Seller Request",
                         "name": "seller",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/seller_web.SellerServiceRequest"
+                            "$ref": "#/definitions/seller_web.RegisterSellerRequest"
                         }
                     }
                 ],
@@ -346,7 +1137,7 @@ const docTemplate = `{
         },
         "/seller/events": {
             "get": {
-                "description": "Get list of events based on seller ID with optional filters, sorting, pagination",
+                "description": "Event (List)",
                 "consumes": [
                     "application/json"
                 ],
@@ -354,10 +1145,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Seller] Event"
                 ],
-                "summary": "Get list of events for a seller",
+                "summary": "Event (List)",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Seller ID",
@@ -367,25 +1165,25 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filters for events (e.g., name=EventName)",
+                        "description": "Filters",
                         "name": "filters",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Sort order for events (e.g., +date or -name)",
+                        "description": "Sort",
                         "name": "sort",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Limit number of events per page",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Page number",
+                        "description": "Page",
                         "name": "page",
                         "in": "query"
                     }
@@ -406,7 +1204,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new event with the input payload",
+                "description": "Event (Create)",
                 "consumes": [
                     "application/json"
                 ],
@@ -414,17 +1212,24 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Seller] Event"
                 ],
-                "summary": "Create a new event",
+                "summary": "Event (Create)",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Create Event Request",
                         "name": "event",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/seller_web.CreateEventsRequest"
+                            "$ref": "#/definitions/seller_web.CreateEventRequest"
                         }
                     }
                 ],
@@ -444,9 +1249,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/seller/events/{id}": {
+        "/seller/events/:event_id/tickets/:ticket_id/check-in": {
             "put": {
-                "description": "Update an event by its ID",
+                "description": "(Check In Ticket)",
                 "consumes": [
                     "application/json"
                 ],
@@ -454,10 +1259,159 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Seller] Event"
                 ],
-                "summary": "Update an event",
+                "summary": "Event (Check In Ticket)",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Ticket ID",
+                        "name": "ticket_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/seller/events/:id": {
+            "delete": {
+                "description": "Event (Delete)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Seller] Event"
+                ],
+                "summary": "Event (Delete)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/seller/events/{id}": {
+            "get": {
+                "description": "Event (View)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Seller] Event"
+                ],
+                "summary": "Event (View)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Create Event Request",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/seller_web.CreateEventRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Event (Update)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Seller] Event"
+                ],
+                "summary": "Event (Update)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Event ID",
@@ -471,7 +1425,61 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/seller_web.UserUpdateServiceRequest"
+                            "$ref": "#/definitions/seller_web.UpdateEventRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseClientModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/seller/events/{id}/status": {
+            "patch": {
+                "description": "Event (Update Status)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "[Seller] Event"
+                ],
+                "summary": "Event (Update Status)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Event ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Event Request",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/seller_web.UpdateEventStatusRequest"
                         }
                     }
                 ],
@@ -493,7 +1501,7 @@ const docTemplate = `{
         },
         "/seller/me": {
             "get": {
-                "description": "Get seller information based on seller ID",
+                "description": "Me (View)",
                 "consumes": [
                     "application/json"
                 ],
@@ -501,9 +1509,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Seller] Me"
                 ],
-                "summary": "Get seller information by ID",
+                "summary": "Me (View)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -531,7 +1539,7 @@ const docTemplate = `{
         },
         "/seller/me/update": {
             "put": {
-                "description": "Update a seller by its ID",
+                "description": "Me (Update)",
                 "consumes": [
                     "application/json"
                 ],
@@ -539,9 +1547,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seller"
+                    "[Seller] Me"
                 ],
-                "summary": "Update a seller",
+                "summary": "Me (Update)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -556,7 +1564,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/seller_web.SellerUpdateServiceRequest"
+                            "$ref": "#/definitions/seller_web.UpdateSellerRequest"
                         }
                     }
                 ],
@@ -578,7 +1586,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "buyer_web.BuyerLoginRequest": {
+        "admin_web.LoginAdminRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -593,7 +1601,7 @@ const docTemplate = `{
                 }
             }
         },
-        "buyer_web.BuyerRequest": {
+        "admin_web.RegisterAdminRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -612,8 +1620,62 @@ const docTemplate = `{
                 }
             }
         },
-        "buyer_web.BuyerUpdateRequest": {
+        "buyer_web.CreateOrderRequest": {
             "type": "object",
+            "required": [
+                "event_id",
+                "qty"
+            ],
+            "properties": {
+                "event_id": {
+                    "type": "integer"
+                },
+                "qty": {
+                    "type": "integer"
+                }
+            }
+        },
+        "buyer_web.LoginBuyerRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "buyer_web.RegisterBuyerRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "buyer_web.UpdateBuyerRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -638,7 +1700,7 @@ const docTemplate = `{
                 }
             }
         },
-        "seller_web.CreateEventsRequest": {
+        "seller_web.CreateEventRequest": {
             "type": "object",
             "required": [
                 "category",
@@ -673,9 +1735,10 @@ const docTemplate = `{
                 }
             }
         },
-        "seller_web.SellerLoginRequest": {
+        "seller_web.LoginSellerRequest": {
             "type": "object",
             "required": [
+                "email",
                 "password"
             ],
             "properties": {
@@ -687,7 +1750,7 @@ const docTemplate = `{
                 }
             }
         },
-        "seller_web.SellerServiceRequest": {
+        "seller_web.RegisterSellerRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -706,22 +1769,7 @@ const docTemplate = `{
                 }
             }
         },
-        "seller_web.SellerUpdateServiceRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "name"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "seller_web.UserUpdateServiceRequest": {
+        "seller_web.UpdateEventRequest": {
             "type": "object",
             "required": [
                 "category",
@@ -729,8 +1777,7 @@ const docTemplate = `{
                 "location",
                 "name",
                 "price",
-                "qty",
-                "seller_id"
+                "qty"
             ],
             "properties": {
                 "category": {
@@ -755,6 +1802,43 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        },
+        "seller_web.UpdateEventStatusRequest": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "seller_web.UpdateSellerRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Bearer",
+            "in": "header"
         }
     }
 }`
