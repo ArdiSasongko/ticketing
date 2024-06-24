@@ -109,7 +109,7 @@ func (controller *AuthControllerImpl) View(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Token"
-// @Param event body buyer_web.UpdateAdminRequest true "Update Admin Request"
+// @Param event body admin_web.UpdateAdminRequest true "Update Admin Request"
 // @Success 200 {object} helper.ResponseClientModel
 // @Failure 400 {object} helper.ResponseClientModel
 // @Router /admin/me/update [put]

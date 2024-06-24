@@ -15,7 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8010",
+    "host": "localhost:8001",
     "basePath": "/",
     "paths": {
         "/admin/admins": {
@@ -382,6 +382,15 @@
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Update Admin Request",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_web.UpdateAdminRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1817,6 +1826,25 @@
             }
         },
         "admin_web.RegisterAdminRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin_web.UpdateAdminRequest": {
             "type": "object",
             "required": [
                 "email",

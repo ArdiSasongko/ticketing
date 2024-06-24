@@ -388,6 +388,15 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "Update Admin Request",
+                        "name": "event",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_web.UpdateAdminRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1841,6 +1850,25 @@ const docTemplate = `{
                 }
             }
         },
+        "admin_web.UpdateAdminRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "buyer_web.CreateOrderRequest": {
             "type": "object",
             "required": [
@@ -2060,7 +2088,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8010",
+	Host:             "localhost:8001",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Ticketing API",

@@ -23,6 +23,19 @@ definitions:
     - name
     - password
     type: object
+  admin_web.UpdateAdminRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
   buyer_web.CreateOrderRequest:
     properties:
       event_id:
@@ -164,7 +177,7 @@ definitions:
     - name
     - password
     type: object
-host: localhost:8010
+host: localhost:8001
 info:
   contact:
     email: support@swagger.io
@@ -416,6 +429,12 @@ paths:
         name: Authorization
         required: true
         type: string
+      - description: Update Admin Request
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/admin_web.UpdateAdminRequest'
       produces:
       - application/json
       responses:
