@@ -186,7 +186,7 @@ func (service *OrderServiceImpl) PayOrder(orderId int) (buyer_entity.HistoryEnti
 			return buyer_entity.HistoryEntity{}, updateSellerErr
 		}
 
-		for i := 1; i < 5; i++ {
+		for i := 0; i < historyItem.Qty; i++ {
 			ticket := domain.Ticket{}
 			ticket.EventIDFK = event.EventID
 			ticket.BuyerIDFK = history.BuyerIDFK
